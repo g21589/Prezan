@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<title>聽眾</title>
+
+	<meta name="description" content="HTML5 Presentation">
+	<meta name="author" content="1KM">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="css/reveal.min.css">
+	<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+	<!-- For syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+	<script>
+		if( window.location.search.match( /print-pdf/gi ) ) {
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = 'css/print/pdf.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		}
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+	#mouse {
+		position: absolute;
+		color: #FFF;
+		font-size: 20px;
+		z-index: 999;
+	}
+	</style>
+	
+</head>
+
+<body>
+
+	<div class="reveal">
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides">
+			
+			<!-- 使用HTML格式 -->
+			<section>
+				<h1>聽眾端</h1>
+				<p>
+					page one.
+				</p>
+			</section>
+			
+			<!-- 使用markdown格式 -->
+			<section data-markdown>
+				<script type="text/template">
+					## Page two
+
+					A paragraph with some text and a [link](http://hakim.se).
+				</script>
+			</section>
+			
+			<!-- 垂直 -->
+			<section>
+			
+				<section>
+					<h1>3 - 1</h1>
+					<h3>654321</h3>
+				</section>
+				
+				<section>
+					<h1>3 - 2</h1>
+					<h3>123456</h3>
+				</section>
+				
+			</section>
+			
+			<section>
+				<h3>Video</h3>
+				<p>
+					<video controls="controls">
+						<source src="video/gizmo.mp4" type="video/mp4" />
+						<source src="video/gizmo.webm" type="video/webm" />
+						<source src="video/gizmo.ogv" type="video/ogg" />
+						Video not playing? <a href="video/gizmo.mp4">Download file</a> instead.
+					</video>
+				</p>
+			</section>
+
+		</div>
+
+	</div>
+	
+	<!-- Reveal -->
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.min.js"></script>
+	
+	<!-- jQuery -->
+	<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+	
+	<!-- socket.io -->
+	<script src="js/socket.io-1.0.6.min.js" type="text/javascript"></script>
+
+	<script>
+		
+		var socket = io('http://127.0.0.1:8080/');
+		var output = "";
+
+		// Full list of configuration options available here:
+		// https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			controls: false,
+			progress: true,
+			history: true,
+			center: true,
+			keyboard: true,
+
+			theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+			transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+			// Parallax scrolling
+			// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+			// parallaxBackgroundSize: '2100px 900px',
+
+			// Optional libraries used to extend on reveal.js
+			dependencies: [
+				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+				{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+			]
+		});
+		
+		socket.on('connect', function () {
+		
+			socket.send('audience_connect');
+			
+			socket.on('message', function (msg) {
+				console.log(msg);
+			});
+			
+			socket.on('audience_chs', function(e) {
+				Reveal.slide(e.indexh, e.indexv, e.indexf);
+			});
+			
+			// mousemove事件
+			socket.on('mousemove', function(mousePos) {
+				console.log(mousePos.x, mousePos.y);
+				$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
+			});
+			
+		});
+		
+	</script>
+	
+	<div id="mouse" style="left: -1px; top: -1px;"><img src="images/mouse-pointer.png"></div>
+	
+</body>
+</html>
