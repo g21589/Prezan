@@ -13,7 +13,6 @@ io.sockets.on('connection', function (socket) {
 		console.log(msg);
 		if (msg == 'audience_connect') {
 			socket.emit('audience_chs', currentSlide);
-			console.log('213132');
 		}
 	});
 	
@@ -34,6 +33,11 @@ io.sockets.on('connection', function (socket) {
 	// mousemove事件
 	socket.on('mousemove', function (mousePos) {
 		socket.broadcast.emit('mousemove', mousePos);
+	});
+	
+	// mouseclick事件
+	socket.on('click', function (mousePos) {
+		socket.broadcast.emit('click', mousePos);
 	});
 	
 	socket.on('disconnect', function () {

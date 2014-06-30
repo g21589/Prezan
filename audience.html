@@ -9,14 +9,12 @@
 
 	<meta name="description" content="HTML5 Presentation">
 	<meta name="author" content="1KM">
-
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 	<link rel="stylesheet" href="css/reveal.min.css">
-	<link rel="stylesheet" href="css/theme/default.css" id="theme">
+	<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 
 	<!-- For syntax highlighting -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -40,7 +38,6 @@
 	#mouse {
 		position: absolute;
 		color: #FFF;
-		font-size: 20px;
 		z-index: 999;
 	}
 	</style>
@@ -50,55 +47,6 @@
 <body>
 
 	<div class="reveal">
-
-		<!-- Any section element inside of this container is displayed as a slide -->
-		<div class="slides">
-			
-			<!-- 使用HTML格式 -->
-			<section>
-				<h1>聽眾端</h1>
-				<p>
-					page one.
-				</p>
-			</section>
-			
-			<!-- 使用markdown格式 -->
-			<section data-markdown>
-				<script type="text/template">
-					## Page two
-
-					A paragraph with some text and a [link](http://hakim.se).
-				</script>
-			</section>
-			
-			<!-- 垂直 -->
-			<section>
-			
-				<section>
-					<h1>3 - 1</h1>
-					<h3>654321</h3>
-				</section>
-				
-				<section>
-					<h1>3 - 2</h1>
-					<h3>123456</h3>
-				</section>
-				
-			</section>
-			
-			<section>
-				<h3>Video</h3>
-				<p>
-					<video controls="controls">
-						<source src="video/gizmo.mp4" type="video/mp4" />
-						<source src="video/gizmo.webm" type="video/webm" />
-						<source src="video/gizmo.ogv" type="video/ogg" />
-						Video not playing? <a href="video/gizmo.mp4">Download file</a> instead.
-					</video>
-				</p>
-			</section>
-
-		</div>
 
 	</div>
 	
@@ -114,24 +62,20 @@
 
 	<script>
 		
+	$('.reveal').load('slides.html', function() {
+		
 		var socket = io('http://127.0.0.1:8080/');
 		var output = "";
-
-		// Full list of configuration options available here:
-		// https://github.com/hakimel/reveal.js#configuration
+		
 		Reveal.initialize({
 			controls: false,
 			progress: true,
 			history: true,
 			center: true,
-			keyboard: true,
+			keyboard: false,
 
 			theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-			transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
-
-			// Parallax scrolling
-			// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-			// parallaxBackgroundSize: '2100px 900px',
+			transition: Reveal.getQueryHash().transition || 'zoom', // default/cube/page/concave/zoom/linear/fade/none
 
 			// Optional libraries used to extend on reveal.js
 			dependencies: [
@@ -156,13 +100,29 @@
 				Reveal.slide(e.indexh, e.indexv, e.indexf);
 			});
 			
-			// mousemove事件
+			// Mousemove事件
 			socket.on('mousemove', function(mousePos) {
-				console.log(mousePos.x, mousePos.y);
 				$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
 			});
 			
+			// Mouseclick事件
+			socket.on('click', function (mousePos) {
+				var x = mousePos.x * $(document).width();
+				var y = mousePos.y * $(document).height();
+				$('#mouse').hide();
+				var element = document.elementFromPoint(x, y);
+				$('#mouse').show();
+				if ($(element).get(0).tagName == 'VIDEO') {
+					var v = $(element).get(0);
+					v.paused ? v.play() : v.pause();
+				} else {
+					$(element).click();
+				}
+			});
+			
 		});
+		
+	});
 		
 	</script>
 	
