@@ -8,7 +8,7 @@ HTML5 即時簡報聽眾系統
 Version
 ----
 
-0.2
+0.2.1
 
 License
 ----

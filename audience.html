@@ -107,8 +107,8 @@
 			
 			// Mouseclick事件
 			socket.on('click', function (mousePos) {
-				var x = mousePos.x * $(document).width();
-				var y = mousePos.y * $(document).height();
+				var x = mousePos.x * $(window).width();
+				var y = mousePos.y * $(window).height();
 				$('#mouse').hide();
 				var element = document.elementFromPoint(x, y);
 				$('#mouse').show();

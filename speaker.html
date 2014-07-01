@@ -85,15 +85,15 @@
 			
 			// Mousemove事件
 			$(document).mousemove(function(event) {
-				currentMousePos.x = event.pageX * 100 / $(document).width();
-				currentMousePos.y = event.pageY * 100 / $(document).height();
+				currentMousePos.x = event.pageX * 100 / $(window).width();
+				currentMousePos.y = event.pageY * 100 / $(window).height();
 				socket.emit('mousemove', currentMousePos);
 			});
 			
 			// Mouseclick事件
 			$(document).click(function(event) {
-				currentMousePos.x = event.pageX / $(document).width();
-				currentMousePos.y = event.pageY / $(document).height();
+				currentMousePos.x = event.pageX / $(window).width();
+				currentMousePos.y = event.pageY / $(window).height();
 				socket.emit('click', currentMousePos);
 			});
 			
