@@ -1,5 +1,5 @@
 # 06/21 Sat.
----
+
 ## 會議記錄
 
 * 他們目前有的技術
@@ -41,7 +41,7 @@ markdown reference:
 IceCast <-- Streaming MP3 (MPEG 1 Layer 3 Audio): Using an IceCast 1 streaming server (detailed in this tutorial) with xmms or WinAmp client
 
 ## todo list
----
+
 1. 架node.js的server ( 架在 245.107)
 2. 完成基本簡報同步換頁功能(reveal.js & WebSocket)
 3. survey webRTC
