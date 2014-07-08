@@ -5,7 +5,7 @@ var currentSlide = {
 	indexf: 0
 };
 
-console.log('Start server');
+console.log('Start server!!');
 
 io.sockets.on('connection', function (socket) {
 	
