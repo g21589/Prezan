@@ -66,30 +66,16 @@
 		
 		var socket = io('http://127.0.0.1:8080/');
 		var output = "";
-		
-		Reveal.initialize({
-			controls: false,
-			progress: true,
-			history: true,
-			center: true,
-			keyboard: false,
 
-			theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-			transition: Reveal.getQueryHash().transition || 'zoom', // default/cube/page/concave/zoom/linear/fade/none
-
-			// Optional libraries used to extend on reveal.js
-			dependencies: [
-				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-				{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-				{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-			]
-		});
-		
+    Reveal.addEventListener( 'ready', function( event ) {
+        Reveal.configure({ 
+          controls: false, 
+          keyboard: false
+        });
+    });
+    
 		socket.on('connect', function () {
-		
+    
 			socket.send('audience_connect');
 			
 			socket.on('message', function (msg) {
