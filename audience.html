@@ -2,22 +2,25 @@
 <html>
 <head>
 
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 	<title>聽眾</title>
 
-	<meta name="description" content="HTML5 Presentation">
-	<meta name="author" content="1KM">
+	<meta name="description" content="HTML5 Presentation" />
+	<meta name="author" content="1KM" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-	<link rel="stylesheet" href="css/reveal.min.css">
-	<link rel="stylesheet" href="css/theme/blood.css" id="theme">
-
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="css/reveal.min.css" />
+	<link rel="stylesheet" href="css/theme/blood.css" id="theme" />
+	
+	<!-- Slidebars CSS -->
+	<link rel="stylesheet" href="css/slidebars/slidebars.css">
+	<link rel="stylesheet" href="css/slidebars/style.css">
+	
 	<!-- For syntax highlighting -->
-	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="lib/css/zenburn.css" />
 
 	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
 	<script>
@@ -46,9 +49,22 @@
 
 <body>
 
-	<div class="reveal">
+	<div class="sb-toggle-right">
+		<div class="navicon-line"></div>
+		<div class="navicon-line"></div>
+		<div class="navicon-line"></div>
+	</div>
+	
+	<div class="sb-slidebar sb-right sb-style-overlay">
+		<div id="hide_button">
+			<img src="images/hide_slidebar.png" />
+		</div>
+	</div>
+	
+	<div id="sb-site" class="reveal">
 
 	</div>
+
 	
 	<!-- Reveal -->
 	<script src="lib/js/head.min.js"></script>
@@ -57,10 +73,22 @@
 	<!-- jQuery -->
 	<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
 	
+	<!-- Slidebars -->
+	<script src="js/slidebars.min.js"></script>
+		
 	<!-- socket.io -->
 	<script src="js/socket.io-1.0.6.min.js" type="text/javascript"></script>
 
 	<script>
+	
+	(function($) {
+		$(document).ready(function() {
+			var mySlidebars = new $.slidebars();
+			$('#hide_button').on('click', function() {
+				mySlidebars.slidebars.close();
+			});
+		});
+	}) (jQuery);
 		
 	$('.reveal').load('slides.html', function() {
 		
@@ -112,7 +140,7 @@
 		
 	</script>
 	
-	<div id="mouse" style="left: -1px; top: -1px;"><img src="images/mouse-pointer.png"></div>
+	<div id="mouse" style="left: 50%; top: 50%;"><img src="images/mouse-pointer.png"></div>
 	
 </body>
 </html>
