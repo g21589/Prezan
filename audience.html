@@ -47,6 +47,39 @@
 		color: #FFF;
 		z-index: 999;
 	}
+	.mouse_animation {
+		position: absolute;
+		top: -25px;
+		left: -25px;
+		width: 50px;
+		height: 50px;
+		border-radius: 100px;
+		border: 3px solid #F00;
+		-webkit-animation: clickEffect 0.75s;
+		-webkit-animation-timing-function: ease-in;
+		animation: clickEffect 0.75s;
+		animation-timing-function: ease-in;
+	}
+	@-webkit-keyframes clickEffect {
+		from {
+			-webkit-transform: scale(0.2);
+			opacity: 1;
+		}
+		to {
+			-webkit-transform: scale(1.2);
+			opacity: 0;
+		}
+	}
+	@keyframes clickEffect {
+		from {
+			transform: scale(0.2);
+			opacity: 1;
+		}
+		to {
+			transform: scale(1.2);
+			opacity: 0;
+		}
+	}
 	</style>
 	
 </head>
@@ -168,8 +201,14 @@
 					var v = $(element).get(0);
 					v.paused ? v.play() : v.pause();
 				} else {
-					$(element).click();
+					//$(element).click();
 				}
+				
+				// 滑鼠點擊動畫
+				var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
+				$("body").append(clickCircle);
+				setTimeout(function() { clickCircle.remove() }, 700);
+				
 			});
 			
 		});
