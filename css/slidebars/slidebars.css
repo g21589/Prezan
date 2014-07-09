@@ -68,7 +68,7 @@ html.sb-scroll-lock.sb-active:not(.sb-static) {
 
 .sb-slidebar {
 	height: 100%;
-	overflow-y: auto; /* Enable vertical scrolling on Slidebars when needed. */
+	overflow-y: visible; /* Enable vertical scrolling on Slidebars when needed. (change auto -> visible)*/
 	position: fixed;
 	top: 0;
 	z-index: 0; /* Slidebars sit behind sb-site. */

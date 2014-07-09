@@ -1,6 +1,6 @@
 #hide_button {
 	cursor: pointer; 
-	position: relative; 
+	position: absolute; 
 	top: 50%;
 }
 
