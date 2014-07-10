@@ -29,10 +29,26 @@
 		document.getElementsByTagName( 'head' )[0].appendChild( link );
 	}
 	</script>
-
+	
 	<!--[if lt IE 9]>
 	<script src="lib/js/html5shiv.js"></script>
 	<![endif]-->
+	
+	<style type="text/css">
+	#online {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		padding: 5px;
+		background-color: rgba(0, 0, 0, 0.75);
+		color: #DDD;
+		border-radius: 3px;
+	}
+	#online:hover {
+		color: #F00;
+	}
+	</style>
+	
 </head>
 
 <body>
@@ -40,6 +56,8 @@
 	<div class="reveal">
 
 	</div>
+	
+	<div id="online">Online: <span>0</span></div>
 	
 	<!-- Reveal -->
 	<script src="lib/js/head.min.js"></script>
@@ -65,6 +83,10 @@
 
 			socket.on('message', function (msg) {
 				console.log(msg);
+			});
+			
+			socket.on('online_counter', function(onlineCounter) {
+				$('#online span').text(onlineCounter);
 			});
 			
 			// ready事件

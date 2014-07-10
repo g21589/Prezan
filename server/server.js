@@ -1,13 +1,19 @@
 var io = require('socket.io').listen(8080);
+
 var currentSlide = {
 	indexh: 0,
 	indexv: 0,
 	indexf: 0
 };
 
+var onlineCounter = 0;
+
 console.log('Start server!!');
 
 io.sockets.on('connection', function (socket) {
+	
+	io.emit('online_counter', ++onlineCounter);
+	console.log("Online: " + onlineCounter);
 	
 	socket.on('message', function (msg) {
 		console.log(msg);
@@ -41,7 +47,9 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	socket.on('disconnect', function () {
-		console.log('disconnect');
+		console.log('Client disconnect');
+		io.emit('online_counter', --onlineCounter);
+		console.log("Online: " + onlineCounter);
 	});
 	
 });
