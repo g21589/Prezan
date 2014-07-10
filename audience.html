@@ -118,6 +118,7 @@
 			var changeId;
 			var note = $('#note');
 			var noteEditor = note.parent().prev();
+			noteEditor.html(localStorage.note);			
 			noteEditor.bind('change keyup paste', function() {
 				clearTimeout(changeId);
 				changeId = setTimeout(function() {
