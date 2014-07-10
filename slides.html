@@ -20,6 +20,22 @@ Reveal.initialize({
 	]
 });
 </script>
+
+<style type="text/css">
+#keyboard {
+	margin: 70px;
+}
+#keyboard .key {
+	padding: 30px;
+	border: 1px solid #CCC;
+	border-radius: 10px;
+}
+#keyboard .key:active {
+	color: #F00;
+	background-color: #444;
+}
+</style>
+	
 <div class="slides">
 
 	<!-- 使用HTML格式 -->
@@ -65,5 +81,32 @@ Reveal.initialize({
 			</video>
 		</p>
 	</section>
-
+	
+	<section>
+		<h3>Web Audio Test</h3>
+		<div id="keyboard">
+			<span class="key k1" f="262">1</span>
+			<span class="key k2" f="294">2</span>
+			<span class="key k3" f="330">3</span>
+			<span class="key k1" f="349">4</span>
+			<span class="key k2" f="392">5</span>
+			<span class="key k3" f="440">6</span>
+			<span class="key k3" f="494">7</span>
+		</div>
+		<script>
+		$('#keyboard .key').click(function() {		
+			var context = new webkitAudioContext(); // Create audio container
+			var oscillator = context.createOscillator(); // Create sound source
+				oscillator.type = 1; // Sine wave
+				oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
+				oscillator.connect(context.destination); // Connect sound to output
+				oscillator.noteOn(0); // Play instantly
+				setTimeout(function() {
+					oscillator.disconnect();
+					oscillator.noteOff(0);
+				}, 500);
+		});
+		</script>
+	</session>
+	
 </div>
