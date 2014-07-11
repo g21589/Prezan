@@ -12,7 +12,7 @@ $(document).ready(function(){
 				<div class="tipIcon"><div class="plusIcon"></div></div>\
 			</div>\
 			<div class="slideOutContent">\
-					<textarea name="QA_content" id="QA_content" class="QA_content" rows="4" cols="50" name="question"></textarea><br>\
+					<textarea name="QA_content" id="QA_content" class="QA_content" rows="4" cols="30" name="question"></textarea><br>\
 					<div id="submit_button" align="right">\
 					<input name="s_button" type="button" value="Submit">\
 					</div>\
