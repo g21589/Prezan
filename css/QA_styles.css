@@ -1,0 +1,122 @@
+/*
+.slideOutTip{
+	The main wrapping div of the slideout tips 
+	position:absolute;
+	padding:3px;
+	top:0;
+	left:0;
+	background-color:#111;
+	font-size:13px;
+	color:white;
+	overflow:hidden;
+	height:22px;
+}*/
+
+.slideOutTip:hover{
+	 Applying a CSS3 outer glow on hover 
+	-moz-box-shadow:0 0 1px #999;
+	-webkit-box-shadow:0 0 1px #999;
+	box-shadow:0 0 1px #999;
+}
+
+/* The holder for the title and the icon: */
+
+.tipVisible{ cursor:pointer; height:22px; }
+/*
+.tipTitle{
+	float:left;
+	font-family:'Myriad Pro',Arial, Helvetica, sans-serif;
+	font-size:15px;
+	font-weight:bold;
+	white-space:nowrap;
+	line-height:22px;
+	padding-right:5px;
+}*/
+
+.tipIcon{
+	width:20px;
+	height:20px;
+	float:left;
+	background-color:#61b035;
+	border:1px solid #70c244;
+	margin-right:8px;
+	
+	/* CSS3 Rounded corners */
+	
+	-moz-border-radius:1px;
+	-webkit-border-radius:1px;
+	border-radius:1px;
+}
+
+/* Three color themes */
+/*.green .tipIcon{ background-color:#61b035; border:1px solid #70c244; }
+.blue .tipIcon{ background-color:#1078C7; border:1px solid #1e82cd; }*/
+.red .tipIcon{ background-color:#CD3A12; border:1px solid #da421a; }
+
+.plusIcon{
+	/* The plus icon */
+	width:13px;
+	height:13px;
+	background:url('plus.gif') no-repeat center center;
+	margin:4px;
+	
+	/* Defining a CSS3 animation. Currently only works in Chrome and Safari */
+	-webkit-transition: -webkit-transform 0.2s linear;
+	-moz-transition: -moz-transform 0.2s linear;
+	transition: transform 0.2s linear;
+}
+
+.slideOutTip.isOpened{ z-index:10000; }
+
+.slideOutTip.isOpened .plusIcon{
+	/* Applying a CSS3 rotation  to the opened slideouts*/
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+	transform:rotate(45deg);
+}
+
+/* Special rules for the left and top - opening versions */
+
+.openLeft .tipIcon{
+	/* Floating the title and the icon to the right */
+	margin:0 0 0 8px;
+	float:right;
+}
+.openLeft .tipTitle{ float:right; padding:0 0 0 5px; }
+.openLeft .slideOutContent{ margin-top:22px; }
+.openLeft.openTop .slideOutContent{	margin-top:0; }
+
+
+.slideOutContent{
+	/* Hiding the div with the slide out content: */
+	display:none;
+	padding:10px;
+	font-size:11px;
+}
+
+/* Hiding the original paragraphs if they have not been replaced (JS disabled): */
+
+.QA_field > p{ display:none; }
+
+.QA_field{
+	position:absolute;
+	bottom:30px;
+	left:10px
+}
+
+
+/* The styles below are only necessary for the styling of the demo page: */
+
+
+.spaceBottom{
+	margin:0 0 10px;
+}
+
+.spaceTop{
+	margin:10px 0 0;
+}
+
+.clear{
+	clear:both;
+}
+

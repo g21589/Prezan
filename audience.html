@@ -82,10 +82,23 @@
 	}
 	</style>
 	
+	<!-- QA_field -->
+	<link rel="stylesheet" type="text/css" href="css/QA_styles.css" />
+	<!-------------->
+	
 </head>
 
 <body>
-
+	
+	<!-- QA_field -->
+	<div class="QA_field" style="position:absolute;bottom:40px;left:10px">
+		 <p class="openTop red" style="bottom:40px;left:10px;">
+		 </p>
+	</div>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/QA_script.js"></script>
+	<!-------------->
+	
 	<div class="sb-toggle-right">
 		<div class="navicon-line"></div>
 		<div class="navicon-line"></div>
@@ -102,7 +115,6 @@
 	<div id="sb-site" class="reveal">
 
 	</div>
-
 	
 	<!-- Reveal -->
 	<script src="lib/js/head.min.js"></script>
@@ -120,7 +132,8 @@
 	<!-- socket.io -->
 	<script src="js/socket.io-1.0.6.min.js" type="text/javascript"></script>
 
-	<script>
+	<script>	
+	
 	//initialize jQery TE
 	$('.jqte').jqte();
 	
@@ -128,7 +141,15 @@
 	(function($) {
 		$(document).ready(function() {
 			//initialize sliderbars
+			
+			/*暫時註解掉這行
+			
+			
 			var mySlidebars = new $.slidebars();
+			
+			
+			*/
+			
 			$('#hide_button').on('click', function() {
 				mySlidebars.slidebars.close();
 			});
@@ -158,10 +179,10 @@
 					console.log(note.val());
 					localStorage.note = note.val();
 				}, 100);				
-			});			
+			});	
 		});
 	}) (jQuery);
-		
+	
 	$('.reveal').load('slides.html', function() {
 		
 		var socket = io('http://127.0.0.1:8080/');
