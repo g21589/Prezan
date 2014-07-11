@@ -94,16 +94,16 @@ Reveal.initialize({
 			<span class="key k3" f="494">7</span>
 		</div>
 		<script>
-		var context = new AudioContext(); // Create audio container
+		var context = new webkitAudioContext(); // Create audio container
 		$('#keyboard .key').click(function() {		
 			var oscillator = context.createOscillator(); // Create sound source
 				oscillator.type = 1; // Square wave
 				oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
 				oscillator.connect(context.destination); // Connect sound to output
-				oscillator.start();	// Play instantly
+				oscillator.noteOn(0); // Play instantly
 				setTimeout(function() {
 					oscillator.disconnect();
-					oscillator.stop();
+					oscillator.noteOff(0);
 				}, 500);
 		});
 		</script>
