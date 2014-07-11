@@ -12,8 +12,8 @@ $(document).ready(function(){
 				<div class="tipIcon"><div class="plusIcon"></div></div>\
 			</div>\
 			<div class="slideOutContent">\
-					<textarea name="QA_content" id="QA_content" class="QA_content" rows="4" cols="30" name="question"></textarea><br>\
-					<div id="submit_button" align="right">\
+					<textarea name="QA_content" id="QA_content" class="QA_content" rows="5" cols="23" name="question"></textarea><br>\
+					<div id="submit_button" align="left;">\
 					<input name="s_button" type="button" value="Submit">\
 					</div>\
 			</div>\
@@ -21,11 +21,11 @@ $(document).ready(function(){
 	});
 	
 	
-	/* 按下submit應該要可以傳到speaker
+	
 	$('#submit_button').on('click', function()
 	{  
 		alert( text);
-	});*/
+	});
 
 	$('.slideOutTip').each(function(){
 

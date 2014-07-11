@@ -49,9 +49,9 @@
 }
 
 /* Three color themes */
-/*.green .tipIcon{ background-color:#61b035; border:1px solid #70c244; }
-.blue .tipIcon{ background-color:#1078C7; border:1px solid #1e82cd; }*/
-.red .tipIcon{ background-color:#CD3A12; border:1px solid #da421a; }
+/*.green .tipIcon{ background-color:#61b035; border:1px solid #70c244; }*/
+.blue .tipIcon{ background-color:#1078C7; border:1px solid #1e82cd; }
+/*.red .tipIcon{ background-color:#CD3A12; border:1px solid #da421a; }*/
 
 .plusIcon{
 	/* The plus icon */
@@ -100,8 +100,8 @@
 
 .QA_field{
 	position:absolute;
-	bottom:30px;
-	left:10px
+	bottom:20px;
+	right:10px
 }
 
 
