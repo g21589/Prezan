@@ -23,12 +23,19 @@ Reveal.initialize({
 
 <style type="text/css">
 #keyboard {
-	margin: 70px;
+	margin: 80px 0 80px 0;
 }
 #keyboard .key {
-	padding: 30px;
+	padding: 50px;
 	border: 1px solid #CCC;
 	border-radius: 10px;
+	box-shadow: 1px 1px 3px #222;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 #keyboard .key:active {
 	color: #F00;
@@ -83,29 +90,51 @@ Reveal.initialize({
 	</section>
 	
 	<section>
-		<h3>Web Audio Test</h3>
+		<h3>Basic Piano</h3>
 		<div id="keyboard">
-			<span class="key k1" f="262">1</span>
-			<span class="key k2" f="294">2</span>
-			<span class="key k3" f="330">3</span>
-			<span class="key k1" f="349">4</span>
-			<span class="key k2" f="392">5</span>
-			<span class="key k3" f="440">6</span>
-			<span class="key k3" f="494">7</span>
+			<span class="key k1" f="262">C</span>
+			<span class="key k2" f="294">D</span>
+			<span class="key k3" f="330">E</span>
+			<span class="key k1" f="349">F</span>
+			<span class="key k2" f="392">G</span>
+			<span class="key k3" f="440">A</span>
+			<span class="key k3" f="494">B</span>
 		</div>
-		<script>
-		var context = new webkitAudioContext(); // Create audio container
-		$('#keyboard .key').click(function() {		
-			var oscillator = context.createOscillator(); // Create sound source
-				oscillator.type = 1; // Square wave
-				oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
-				oscillator.connect(context.destination); // Connect sound to output
-				oscillator.noteOn(0); // Play instantly
+		<script type="text/javascript">
+		var context;
+		try {
+			window.AudioContext = window.AudioContext || window.webkitAudioContext;	// Fix up for prefixing
+			context = new AudioContext();	// Create audio container
+			
+			$('#keyboard .key').click(function() {
+			
+				var oscillator = context.createOscillator(); // Create sound source
+					oscillator.type = 1; // Square wave
+					oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
+					oscillator.connect(context.destination); // Connect sound to output
+				
+				// Play instantly
+				if (oscillator.start) {
+					oscillator.start(0);
+				} else if (oscillator.noteOn) {
+					oscillator.noteOn(0);
+				}
+				
 				setTimeout(function() {
 					oscillator.disconnect();
-					oscillator.noteOff(0);
+					// Stop instantly
+					if (oscillator.stop) {
+						oscillator.stop(0);
+					} else if (oscillator.noteOff) {
+						oscillator.noteOff(0);
+					}	
 				}, 500);
-		});
+			
+			});
+			
+		} catch(e) {
+			$("#keyboard").html("Sorry!<br>Web Audio API is not supported in this browser!");
+		}
 		</script>
 	</session>
 	
