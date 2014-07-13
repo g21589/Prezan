@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>錄音</title>
+	<meta name="description" content="HTML5 Presentation">
+	<meta name="author" content="1KM">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+
+<body>
+	
+	<h1>錄音</h1>
+	
+	<!-- jQuery -->
+	<script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>
+	
+	<!-- socket.io -->
+	<script src="../js/socket.io-1.0.6.min.js" type="text/javascript"></script>
+
+	<script>
+	
+	var socket = io('http://127.0.0.1:8080/');
+	
+	socket.on('connect', function () {
+	
+		audioContext = window.AudioContext || window.webkitAudioContext;
+		var context = new audioContext();
+		
+		navigator.getUserMedia = (
+			navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia
+		);
+
+		if (navigator.getUserMedia) {
+			navigator.getUserMedia ({audio: true}, success, function (err) {
+				console.log("The following error occured: " + err);
+			});
+		} else {
+		   console.log("getUserMedia not supported");
+		}
+		
+		function success(stream) {
+			
+			var audioInput = context.createMediaStreamSource(stream);
+			
+			var bufferSize = 2048;
+			var recorder = context.createScriptProcessor(bufferSize, 1, 1);
+			
+			recorder.onaudioprocess = function(event) {
+				//console.log('recording');
+				
+				var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
+				// send audio_data to server
+				socket.emit('audio', audioData);
+			}
+			
+			audioInput.connect(recorder);
+			recorder.connect(context.destination);
+			
+		}
+		
+		function convertoFloat32ToInt16(buffer) {
+			var l = buffer.length;
+			var buf = new Int16Array(l);
+
+			while (l--) {
+				buf[l] = buffer[l] * 0xFFFF;    // convert to 16 bit
+			}
+			return buf.buffer;
+		}
+	
+	});
+	</script>
+
+</body>
+</html>
