@@ -28,14 +28,15 @@
 	audioContext = window.AudioContext || window.webkitAudioContext;
 	context = new audioContext();
 	
-	var audioBuffer = context.createBuffer(1, 2048, context.sampleRate);
+	var bufferSize = 4096;
+	var audioBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
 	
 	function convertoInt16ToFloat32(buffer) {
 		var l = buffer.length;
 		var buf = new Float32Array(l);
 		
 		while (l--) {
-			buf[l] = buffer[l] / 0xFFFF;    // convert to 32 bit
+			buf[l] = buffer[l] * 20 / 0xFFFF;    // convert to 32 bit
 		}
 		return buf;
 	}
@@ -46,13 +47,13 @@
 		
 		socket.on('audio', function (audioData) {
 			
-			var a = new Int16Array(audioData, 0, 2048);
+			var a = new Int16Array(audioData, 0, bufferSize);
 			
 			// create the Buffer from the recording
             audioBuffer.getChannelData(0).set(convertoInt16ToFloat32(a), 0);
 			
 			// create the Buffer Node with this Buffer
-			source = context.createBufferSource();
+			var source = context.createBufferSource();
             source.buffer = audioBuffer;
 			
 			// connect the node to the destination

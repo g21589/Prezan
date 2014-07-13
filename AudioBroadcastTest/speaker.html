@@ -25,11 +25,13 @@
 	
 	var socket = io('http://127.0.0.1:8080/');
 	
+	audioContext = window.AudioContext || window.webkitAudioContext;
+	var context = new audioContext();
+	var recorder;
+	var bufferSize = 4096;
+	
 	socket.on('connect', function () {
 	
-		audioContext = window.AudioContext || window.webkitAudioContext;
-		var context = new audioContext();
-		
 		navigator.getUserMedia = (
 			navigator.getUserMedia || navigator.webkitGetUserMedia ||
 			navigator.mozGetUserMedia || navigator.msGetUserMedia
@@ -47,15 +49,10 @@
 			
 			var audioInput = context.createMediaStreamSource(stream);
 			
-			var bufferSize = 2048;
-			var recorder = context.createScriptProcessor(bufferSize, 1, 1);
-			
+			recorder = context.createScriptProcessor(bufferSize, 1, 1);
 			recorder.onaudioprocess = function(event) {
-				//console.log('recording');
-				
 				var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
-				// send audio_data to server
-				socket.emit('audio', audioData);
+				socket.emit('audio', audioData);	// send audio_data to server
 			}
 			
 			audioInput.connect(recorder);
