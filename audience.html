@@ -135,6 +135,8 @@
 
 	<script>	
 	
+	
+	
 	//initialize jQery TE
 	$('.jqte').jqte();
 	
@@ -230,6 +232,10 @@
 			
 		});
 		
+		socket.on( 'Ask_msg', function( questions)
+		{
+			alert( questions);
+		});
 	});
 		
 	</script>

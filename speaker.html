@@ -89,6 +89,11 @@
 				$('#online span').text(onlineCounter);
 			});
 			
+			socket.on( 'Ask_msg', function( questions)
+			{
+				alert( questions);
+			});
+			
 			// ready事件
 			Reveal.addEventListener('ready', function(e) {
 				currentSlide.indexh = e.indexh;
