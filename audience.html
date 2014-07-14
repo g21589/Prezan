@@ -84,6 +84,8 @@
 	
 	<!-- QA_field -->
 	<link rel="stylesheet" type="text/css" href="css/QA_styles.css" />
+	<link rel="stylesheet" href="css/alertify.core.css" />
+	<link rel="stylesheet" href="css/alertify.default.css" />
 	<!-------------->
 	
 </head>
@@ -116,6 +118,10 @@
 	<div id="sb-site" class="reveal">
 
 	</div>
+	
+	<!-- New Style Alert -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="js/alertify.js"></script>
 	
 	<!-- Reveal -->
 	<script src="lib/js/head.min.js"></script>
@@ -234,7 +240,7 @@
 		
 		socket.on( 'Ask_msg', function( questions)
 		{
-			alert( questions);
+			alertify.success( questions);
 		});
 	});
 		

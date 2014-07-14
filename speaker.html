@@ -15,6 +15,10 @@
 
 	<link rel="stylesheet" href="css/reveal.min.css">
 	<link rel="stylesheet" href="css/theme/blood.css" id="theme">
+	
+	<!-- New Style Alert -->
+	<link rel="stylesheet" href="css/alertify.core.css" />
+	<link rel="stylesheet" href="css/alertify.default.css" />
 
 	<!-- For syntax highlighting -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -59,6 +63,10 @@
 	
 	<div id="online">Online: <span>0</span></div>
 	
+	<!-- New Style Alert -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="js/alertify.js"></script>
+	
 	<!-- Reveal -->
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.min.js"></script>
@@ -89,9 +97,10 @@
 				$('#online span').text(onlineCounter);
 			});
 			
+			// ask事件
 			socket.on( 'Ask_msg', function( questions)
 			{
-				alert( questions);
+				alertify.alert( questions);
 			});
 			
 			// ready事件
