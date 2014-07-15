@@ -98,15 +98,15 @@
 	</div>
 	
 	<div class="sb-slidebar sb-right sb-style-overlay sb-width-custom" data-sb-width="20%">
+	
 		<textarea id="note" class="jqte"></textarea>
 		<div id="hide_button">
 			<img src="images/hide_slidebar.png" />
 		</div>		
 		
 		<!-- QA_field -->
-		<div class="QA_field" style="position:absolute;bottom:20px;right:10px">
-			<p class="openTop openLeft blue" style="bottom:0px;right:0px;">
-			</p>
+		<div id="QA_field" class="QA_field" style="position:absolute;bottom:20px;right:10px">
+			<p class="openTop openLeft blue" style="bottom:0px;right:0px;"></p>
 		</div>	
 		<!-------------->
 		
@@ -161,7 +161,6 @@
 				if(mySlidebars.slidebars.active('right')) {
 					var button = $('#hide_button img');
 					button.width(48 * ($('.sb-slidebar').width() / sliderbarsWidth) );	//48 is width of icon
-					console.log(buttonWidth+','+($('.sb-slidebar').width() / sliderbarsWidth));
 				}
 			}, 100);				
 		});
@@ -228,6 +227,12 @@
 				$("body").append(clickCircle);
 				setTimeout(function() { clickCircle.remove() }, 700);
 				
+			});
+			
+			// 問問題
+			$("#QA_field").on("click", "#ask_submit", function() {
+				var text = $('#QA_content').val();
+				socket.emit('QA_ask', text);
 			});
 			
 			// Ask_msg
