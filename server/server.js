@@ -46,15 +46,15 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('click', mousePos);
 	});
 	
-	// 送出Audio錄音緩衝區事件
-	socket.on('audio', function (audioData) {
-		socket.broadcast.emit('audio', audioData);
-	});
-	
 	socket.on('disconnect', function () {
 		console.log('Client disconnect');
 		io.emit('online_counter', --onlineCounter);
 		console.log("Online: " + onlineCounter);
+	});
+	
+	socket.on( 'QA_ask', function( questions)
+	{
+		socket.broadcast.emit('Ask_msg', questions);
 	});
 	
 });
