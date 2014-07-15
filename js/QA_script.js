@@ -121,10 +121,11 @@ $(document).ready(function(){
 
 	});
 });
+
 function func_ask()
 {
 	var socket = io('http://127.0.0.1:8080/');
 	var text = $('#QA_content').val();
-	alert( text);
+	//alert(text);
 	socket.emit( 'QA_ask', text);
 }

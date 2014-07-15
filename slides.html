@@ -92,13 +92,13 @@ Reveal.initialize({
 	<section>
 		<h3>Basic Piano</h3>
 		<div id="keyboard">
-			<span class="key k1" f="262">C</span>
-			<span class="key k2" f="294">D</span>
-			<span class="key k3" f="330">E</span>
-			<span class="key k1" f="349">F</span>
-			<span class="key k2" f="392">G</span>
-			<span class="key k3" f="440">A</span>
-			<span class="key k3" f="494">B</span>
+			<span class="key" f="262">C</span>
+			<span class="key" f="294">D</span>
+			<span class="key" f="330">E</span>
+			<span class="key" f="349">F</span>
+			<span class="key" f="392">G</span>
+			<span class="key" f="440">A</span>
+			<span class="key" f="494">B</span>
 		</div>
 		<script type="text/javascript">
 		var context;
@@ -107,7 +107,7 @@ Reveal.initialize({
 			context = new AudioContext();	// Create audio container
 			
 			$('#keyboard .key').click(function() {
-			
+				
 				var oscillator = context.createOscillator(); // Create sound source
 					oscillator.type = 1; // Square wave
 					oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
@@ -120,12 +120,16 @@ Reveal.initialize({
 					oscillator.noteOn(0);
 				}
 				
-				// Stop instantly
-				if (oscillator.stop) {
-					oscillator.stop(0);
-				} else if (oscillator.noteOff) {
+				setTimeout(function() {
+					oscillator.disconnect();
 					oscillator.noteOff(0);
-				}
+					// Stop instantly
+					if (oscillator.stop) {
+						oscillator.stop(0);
+					} else if (oscillator.noteOff) {
+						oscillator.noteOff(0);
+					}	
+				}, 500);
 				
 			});
 			
@@ -133,6 +137,6 @@ Reveal.initialize({
 			$("#keyboard").html("Sorry!<br>Web Audio API is not supported in this browser!");
 		}
 		</script>
-	</session>
+	</section>
 	
 </div>
