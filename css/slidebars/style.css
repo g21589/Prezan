@@ -1,3 +1,8 @@
+.jqte {
+	margin: 0px;
+	display: table;
+}
+
 #hide_button {
 	cursor: pointer; 
 	position: absolute; 
@@ -12,6 +17,7 @@
 .sb-slidebar {
 	top: 50px;
 	height: calc(100% - 50px);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 .sb-toggle-right {
