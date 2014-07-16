@@ -9,6 +9,10 @@
 	padding: 80px 0 30px 0;
 }
 
+.sb-slidebar {
+	top: 50px;
+}
+
 .sb-toggle-right {
 	width: 58px;
 	padding: 14px;
