@@ -124,12 +124,10 @@
 		// Resize Functions
 		$(window).resize(function() {
 			var resizedWindowWidth = $(window).width(); // Get resized window width.
-			if (windowWidth !== resizedWindowWidth) { // Slidebars is running and window was actually resized.
-				windowWidth = resizedWindowWidth; // Set the new window width.
-				initialise(); // Call initalise to see if Slidebars should still be running.
-				if (leftActive) open('left'); // If left Slidebar is open, calling open will ensure it is the correct size.
-				if (rightActive) open('right'); // If right Slidebar is open, calling open will ensure it is the correct size.
-			}
+			windowWidth = resizedWindowWidth; // Set the new window width.
+			initialise(); // Call initalise to see if Slidebars should still be running.
+			if (leftActive) open('left'); // If left Slidebar is open, calling open will ensure it is the correct size.
+			if (rightActive) open('right'); // If right Slidebar is open, calling open will ensure it is the correct size.
 		});
 		// I may include a height check along side a width check here in future.
 
