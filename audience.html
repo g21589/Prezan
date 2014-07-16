@@ -183,7 +183,12 @@
 		
 		var socket = io('http://127.0.0.1:8080/');
 		var output = "";
-
+		
+		audioContext = window.AudioContext || window.webkitAudioContext;
+		var context = new audioContext();
+		var bufferSize = 4096;
+		var audioBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
+		
 		Reveal.addEventListener( 'ready', function( event ) {
 			Reveal.configure({ 
 				controls: false, 
@@ -238,6 +243,29 @@
 			// Ask_msg
 			socket.on('Ask_msg', function(questions) {
 				alertify.success(questions);
+			});
+			
+			// audio
+			socket.on('audio', function(audioData) {
+			
+				var temp = new Int16Array(audioData, 0, bufferSize);
+				audioBuffer.getChannelData(0).set(convertoInt16ToFloat32(temp), 0);
+				
+				var source = context.createBufferSource();
+				source.buffer = audioBuffer;
+				
+				source.connect(context.destination);
+				source.start(0);
+				
+				function convertoInt16ToFloat32(buffer) {
+					var l = buffer.length;
+					var buf = new Float32Array(l);
+					while (l--) {
+						buf[l] = buffer[l] * 20 / 0xFFFF;    // convert to 32 bit
+					}
+					return buf;
+				}
+				
 			});
 			
 		});

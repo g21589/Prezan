@@ -83,6 +83,11 @@
 		var currentMousePos = { x: -1, y: -1 };
 		var currentSlide = { indexh: 0, indexv: 0, indexf: 0};
 		
+		audioContext = window.AudioContext || window.webkitAudioContext;
+		var context = new audioContext();
+		var recorder;
+		var bufferSize = 4096;
+		
 		socket.on('connect', function () {
 		
 			socket.send('speaker_connect');
@@ -129,6 +134,48 @@
 				currentMousePos.y = event.pageY / $(window).height();
 				socket.emit('click', currentMousePos);
 			});
+			
+			(function() {
+			
+				navigator.getUserMedia = (
+					navigator.getUserMedia || navigator.webkitGetUserMedia ||
+					navigator.mozGetUserMedia || navigator.msGetUserMedia
+				);
+
+				if (navigator.getUserMedia) {
+				
+					navigator.getUserMedia({audio: true}, function (stream) {
+					
+						var audioInput = context.createMediaStreamSource(stream);
+						
+						recorder = context.createScriptProcessor(bufferSize, 1, 1);
+						recorder.onaudioprocess = function (event) {
+							var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
+							socket.emit('audio', audioData);	// send audio_data to server
+						}
+						
+						audioInput.connect(recorder);
+						recorder.connect(context.destination);
+						
+					}, function (err) {
+						console.log("The following error occured: " + err);
+					});
+					
+				} else {
+				   console.log("getUserMedia not supported");
+				}
+				
+				function convertoFloat32ToInt16(buffer) {
+					var l = buffer.length;
+					var buf = new Int16Array(l);
+
+					while (l--) {
+						buf[l] = buffer[l] * 0xFFFF;    // convert to 16 bit
+					}
+					return buf.buffer;
+				}
+			
+			})();
 			
 		});
 
