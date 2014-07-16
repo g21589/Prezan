@@ -98,12 +98,12 @@
 	</div>
 	
 	<div class="sb-slidebar sb-right sb-style-overlay sb-width-custom" data-sb-width="20%">
+	
 		<textarea id="note" class="jqte"></textarea>
 		
 		<!-- QA_field -->
-		<div class="QA_field" style="position:absolute;bottom:20px;right:10px">
-			<p class="openTop openLeft blue" style="bottom:0px;right:0px;">
-			</p>
+		<div id="QA_field" class="QA_field" style="position:absolute;bottom:20px;right:10px">
+			<p class="openTop openLeft blue" style="bottom:0px;right:0px;"></p>
 		</div>	
 		<!-------------->
 		
@@ -158,7 +158,6 @@
 				if(mySlidebars.slidebars.active('right')) {
 					var button = $('#hide_button img');
 					button.width(48 * ($('.sb-slidebar').width() / sliderbarsWidth) );	//48 is width of icon
-					console.log(buttonWidth+','+($('.sb-slidebar').width() / sliderbarsWidth));
 				}
 			}, 100);				
 		});
@@ -181,7 +180,12 @@
 		
 		var socket = io('http://127.0.0.1:8080/');
 		var output = "";
-
+		
+		audioContext = window.AudioContext || window.webkitAudioContext;
+		var context = new audioContext();
+		var bufferSize = 4096;
+		var audioBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
+		
 		Reveal.addEventListener( 'ready', function( event ) {
 			Reveal.configure({ 
 				controls: false, 
@@ -227,9 +231,38 @@
 				
 			});
 			
+			// 問問題
+			$("#QA_field").on("click", "#ask_submit", function() {
+				var text = $('#QA_content').val();
+				socket.emit('QA_ask', text);
+			});
+			
 			// Ask_msg
 			socket.on('Ask_msg', function(questions) {
 				alertify.success(questions);
+			});
+			
+			// audio
+			socket.on('audio', function(audioData) {
+			
+				var temp = new Int16Array(audioData, 0, bufferSize);
+				audioBuffer.getChannelData(0).set(convertoInt16ToFloat32(temp), 0);
+				
+				var source = context.createBufferSource();
+				source.buffer = audioBuffer;
+				
+				source.connect(context.destination);
+				source.start(0);
+				
+				function convertoInt16ToFloat32(buffer) {
+					var l = buffer.length;
+					var buf = new Float32Array(l);
+					while (l--) {
+						buf[l] = buffer[l] * 20 / 0xFFFF;    // convert to 32 bit
+					}
+					return buf;
+				}
+				
 			});
 			
 		});

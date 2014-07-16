@@ -14,7 +14,7 @@ $(document).ready(function(){
 			<div class="slideOutContent">\
 					<textarea name="QA_content" id="QA_content" class="QA_content" rows="5" cols="23" name="question"></textarea><br>\
 					<div id="submit_button" align="left;">\
-					<button onClick="func_ask()">Ask</button>\
+					<button id="ask_submit">Ask</button>\
 					</div>\
 			</div>\
 		</div>';
@@ -121,11 +121,3 @@ $(document).ready(function(){
 
 	});
 });
-
-function func_ask()
-{
-	var socket = io('http://127.0.0.1:8080/');
-	var text = $('#QA_content').val();
-	//alert(text);
-	socket.emit( 'QA_ask', text);
-}
