@@ -8,7 +8,27 @@ HTML5 即時簡報聽眾系統
 Version
 ----
 
-0.2.2
+0.2.5
+
+Install on Ubuntu 14.04 Server
+----
+
+```sh
+sudo apt-get install lamp-server^
+
+sudo apt-get install gcc g++ libasound-dev
+
+sudo apt-get install python-software-properties
+sudo apt-add-repository ppa:chris-lea/node.js
+sudo apt-get update
+
+sudo apt-get install nodejs
+
+git clone https://github.com/g21589/Prezan.git Prezan
+cd Prezan/server
+
+sudo npm install socket.io
+```
 
 License
 ----
