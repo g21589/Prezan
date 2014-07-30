@@ -139,13 +139,13 @@
 	<script>	
 	
 	//initialize jQery TE
-	$('.jqte').jqte();
+	$('.jqte').jqte({"source": false});
 	
 	//for sliderbars & note
 	$(document).ready(function() {
 		//initialize sliderbars		
 		var mySlidebars = new $.slidebars();
-
+		/*
 		//resize sliderbars
 		var resizeId;
 		var sliderbarsWidth = $('.sb-slidebar').width();						
@@ -158,7 +158,7 @@
 				}
 			}, 100);				
 		});
-		
+		*/
 		//save note value on change
 		var changeId;
 		var note = $('#note');
