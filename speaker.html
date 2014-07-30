@@ -86,7 +86,7 @@
 		audioContext = window.AudioContext || window.webkitAudioContext;
 		var context = new audioContext();
 		var recorder;
-		var bufferSize = 4096;
+		var bufferSize = 16384;
 		
 		socket.on('connect', function () {
 		

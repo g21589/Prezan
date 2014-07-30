@@ -8,7 +8,7 @@ HTML5 即時簡報聽眾系統
 Version
 ----
 
-0.2.5
+0.2.8
 
 Install on Ubuntu 14.04 Server
 ----
@@ -28,6 +28,7 @@ git clone https://github.com/g21589/Prezan.git Prezan
 cd Prezan/server
 
 sudo npm install socket.io
+sudo npm install lame
 ```
 
 License

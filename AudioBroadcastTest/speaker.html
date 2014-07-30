@@ -28,7 +28,7 @@
 	audioContext = window.AudioContext || window.webkitAudioContext;
 	var context = new audioContext();
 	var recorder;
-	var bufferSize = 4096;
+	var bufferSize = 16384;
 	
 	socket.on('connect', function () {
 	
@@ -38,26 +38,26 @@
 		);
 
 		if (navigator.getUserMedia) {
-			navigator.getUserMedia ({audio: true}, success, function (err) {
+		
+			navigator.getUserMedia({audio: true}, function (stream) {
+			
+				var audioInput = context.createMediaStreamSource(stream);
+				
+				recorder = context.createScriptProcessor(bufferSize, 1, 1);
+				recorder.onaudioprocess = function (event) {
+					var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
+					socket.emit('audio', audioData);	// send audio_data to server
+				}
+				
+				audioInput.connect(recorder);
+				recorder.connect(context.destination);
+				
+			}, function (err) {
 				console.log("The following error occured: " + err);
 			});
+			
 		} else {
 		   console.log("getUserMedia not supported");
-		}
-		
-		function success(stream) {
-			
-			var audioInput = context.createMediaStreamSource(stream);
-			
-			recorder = context.createScriptProcessor(bufferSize, 1, 1);
-			recorder.onaudioprocess = function(event) {
-				var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
-				socket.emit('audio', audioData);	// send audio_data to server
-			}
-			
-			audioInput.connect(recorder);
-			recorder.connect(context.destination);
-			
 		}
 		
 		function convertoFloat32ToInt16(buffer) {

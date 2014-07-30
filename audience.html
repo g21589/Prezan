@@ -180,10 +180,8 @@
 		
 		audioContext = window.AudioContext || window.webkitAudioContext;
 		var context = new audioContext();
-		var bufferSize = 4096;
-		var audioBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
 		
-		Reveal.addEventListener( 'ready', function( event ) {
+		Reveal.addEventListener('ready', function( event ) {
 			Reveal.configure({ 
 				controls: false, 
 				keyboard: false
@@ -240,26 +238,27 @@
 			});
 			
 			// audio
-			socket.on('audio', function(audioData) {
+			socket.on('mp3', function (audioData) {
 			
-				var temp = new Int16Array(audioData, 0, bufferSize);
-				audioBuffer.getChannelData(0).set(convertoInt16ToFloat32(temp), 0);
-				
-				var source = context.createBufferSource();
-				source.buffer = audioBuffer;
-				
-				source.connect(context.destination);
-				source.start(0);
-				
-				function convertoInt16ToFloat32(buffer) {
-					var l = buffer.length;
-					var buf = new Float32Array(l);
-					while (l--) {
-						buf[l] = buffer[l] * 20 / 0xFFFF;    // convert to 32 bit
+				context.decodeAudioData(audioData, function(audioBuffer) {
+					if (! audioBuffer) {
+						console.error('Error decoding file data.');
+						return;
 					}
-					return buf;
-				}
-				
+					
+					var source = context.createBufferSource();
+					source.buffer = audioBuffer;
+					
+					// connect the node to the destination
+					source.connect(context.destination);
+					
+					// Play the audio
+					source.start(0);
+					
+				}, function (error) {
+					console.error('Error decoding file data.');
+				});
+			
 			});
 			
 		});
