@@ -41,42 +41,72 @@ Reveal.initialize({
 	color: #F00;
 	background-color: #444;
 }
+.reveal h1, .reveal h2, .reveal h3 {
+	text-transform: none;
+	font-family: 'Microsoft JhengHei';
+}
+#slides .cht {
+	font-family: 'Microsoft JhengHei';
+}
 </style>
 	
-<div class="slides">
+<div id="slides" class="slides">
 
 	<!-- 使用HTML格式 -->
 	<section>
-		<h1>測試</h1>
-		<p>
-			page one.
-		</p>
+		<h1 class='cht'>Prezan</h1>
+		<h3 class='cht'>HTML5 即時簡報聽眾系統</h3>
+		<p class='cht'>開發團隊: 1KM</p>
+		<p class='cht'>指導老師: 黃宇新</p>
 	</section>
 
 	<!-- 使用markdown格式 -->
-	<section data-markdown>
+	<section data-markdown class="cht">
 		<script type="text/template">
-			## Page two
-
-			A paragraph with some text and a [link](http://hakim.se).
+			## 解放你的投影片
+			
+			Fork on [Github](https://github.com/g21589/Prezan)
 		</script>
 	</section>
 
 	<!-- 垂直 -->
-	<section>
+	<section class="cht">
 
 		<section>
-			<h1>3 - 1</h1>
-			<h3>654321</h3>
+			<h2>解放你的投影片</h2>
+			<p style="font-size: 28px;">透過 HTML5 技術，建造一個演講時給予聽眾和講者互動的即時系統。使聽眾可以透過簡報和會眾進行交流，此外，聽眾亦可使用系統取得講者簡報、做筆記或者針對簡報提出問題。</p>
 		</section>
 		
 		<section>
 			<h1>3 - 2</h1>
-			<h3>123456</h3>
 		</section>
 		
 	</section>
-
+	
+	<section>
+		
+		<h3 class="cht">系統架構</h3>
+		<img src="./images/arch.PNG" style="max-width: 640px; background: rgba(0, 0, 0, 0); border: none; box-shadow: none;">
+		
+	</section>
+	
+	<section>
+		
+		<h3 class="cht">使用軟體清單</h3>
+		
+		<ol>
+			<li>Reveal.js (<a href="https://github.com/hakimel/reveal.js">https://github.com/hakimel/reveal.js</a>)</li>
+			<li>Node.js (<a href="http://nodejs.org/">http://nodejs.org/</a>)</li>
+			<li>Socket.IO (<a href="http://socket.io/">http://socket.io/</a>)</li>
+			<li>jQuery (<a href="http://jquery.com/">http://jquery.com/</a>)</li>
+			<li>jQuery TE (<a href="http://jqueryte.com">http://jqueryte.com</a>)</li>
+			<li>Slidebars (<a href="http://plugins.adchsm.me/slidebars">http://plugins.adchsm.me/slidebars</a>)</li>
+			<li>alertify.js (<a href="http://fabien-d.github.io/alertify.js">http://fabien-d.github.io/alertify.js</a>)</li>
+			<li>Node-LAME (<a href="https://github.com/TooTallNate/node-lame">https://github.com/TooTallNate/node-lame</a>)</li>
+		</ol>
+		
+	</section>
+	
 	<section>
 		<h3>Video</h3>
 		<p>
@@ -137,6 +167,221 @@ Reveal.initialize({
 			$("#keyboard").html("Sorry!<br>Web Audio API is not supported in this browser!");
 		}
 		</script>
+<pre style="max-height: 250px;">
+<code class="javascript" style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; font-size: 14pt;">var context;
+try {
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;	// Fix up for prefixing
+	context = new AudioContext();	// Create audio container
+	
+	$('#keyboard .key').click(function() {
+		
+		var oscillator = context.createOscillator(); // Create sound source
+			oscillator.type = 1; // Square wave
+			oscillator.frequency.value = parseInt($(this).attr("f")); // Frequency in hertz
+			oscillator.connect(context.destination); // Connect sound to output
+		
+		// Play instantly
+		if (oscillator.start) {
+			oscillator.start(0);
+		} else if (oscillator.noteOn) {
+			oscillator.noteOn(0);
+		}
+		
+		setTimeout(function() {
+			oscillator.disconnect();
+			oscillator.noteOff(0);
+			// Stop instantly
+			if (oscillator.stop) {
+				oscillator.stop(0);
+			} else if (oscillator.noteOff) {
+				oscillator.noteOff(0);
+			}	
+		}, 500);
+		
+	});
+	
+} catch(e) {
+	$("#keyboard").html("Sorry!<br>Web Audio API is not supported in this browser!");
+}
+</code>
+</pre>
+	</section>
+	
+	<section>
+		<h3>Fancy CSS3 Button</h3>
+		<div id="btns">
+			<div class="button gray"><div class="shine"></div>Button</div>
+			<div class="button blue"><div class="shine"></div>Button</div><br/>
+			<div class="button green"><div class="shine"></div>Button</div>
+			<div class="button red"><div class="shine"></div>Button</div>
+			<div class="button purple"><div class="shine"></div>Button</div>
+			<div class="button orange"><div class="shine"></div>Button</div>
+		</div>
+		<style>
+		#btns .button {
+			min-height: 1.5em;
+			display: inline-block;
+			padding: 12px 36px;
+			margin: 20px 5px 5px 0px;
+			cursor: pointer;
+			opacity: 0.9;
+			
+			color: #FFF;
+			font-size: 16pt;
+			letter-spacing: 1px;
+			text-shadow: rgba(0,0,0,0.9) 0px 1px 2px;
+			
+			background: #434343;
+			border: 1px solid #242424;
+		   
+			-webkit-border-radius: 4px;
+			 -khtml-border-radius: 4px;
+			   -moz-border-radius: 4px;
+				 -o-border-radius: 4px;
+					border-radius: 4px;
+			-webkit-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			 -khtml-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			   -moz-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+				 -o-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+					box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			-webkit-transition: all 0.1s linear;
+			 -khtml-transition: all 0.1s linear;
+			   -moz-transition: all 0.1s linear;
+				 -o-transition: all 0.1s linear;
+					transition: all 0.1s linear;
+		}
+		#btns .button:hover {
+			-webkit-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			 -khtml-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			   -moz-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+				 -o-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+					box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+		}
+		#btns .button:active {
+			-webkit-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px,inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			 -khtml-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px,inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			   -moz-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+				 -o-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+					box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+		}
+		#btns .shine {
+			display: block;
+			position: relative;
+			background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+			background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0)));
+			background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+			background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+			background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00ffffff',GradientType=1 );
+			background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+			padding: 0px 12px;
+			top: -12px;
+			left: -24px;
+			height: 1px;
+			-webkit-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+			 -khtml-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+			   -moz-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+				 -o-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+					box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+			-webkit-transition: all 0.3s ease-in-out;
+			 -khtml-transition: all 0.3s ease-in-out;
+			   -moz-transition: all 0.3s ease-in-out;
+				 -o-transition: all 0.3s ease-in-out;
+					transition: all 0.3s ease-in-out;
+		}
+		#btns .button:hover .shine {left: 24px;}
+		#btns .button:active .shine {opacity: 0;}
+
+		#btns .button.gray {background: #555;}
+		#btns .button.blue {background: #3a617e;}
+		#btns .button.green {background: #477343;}
+		#btns .button.red {background: #723131;}
+		#btns .button.purple {background: #4b3f5e;}
+		#btns .button.orange {background: #624529;}
+		</style>
+<pre style="max-height: 250px;">
+<code class="css" style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; font-size: 14pt;">#btns .button {
+	min-height: 1.5em;
+	display: inline-block;
+	padding: 12px 36px;
+	margin: 40px 5px 5px 0px;
+	cursor: pointer;
+	opacity: 0.9;
+	
+	color: #FFF;
+	font-size: 1em;
+	letter-spacing: 1px;
+	text-shadow: rgba(0,0,0,0.9) 0px 1px 2px;
+	
+	background: #434343;
+	border: 1px solid #242424;
+   
+	-webkit-border-radius: 4px;
+	 -khtml-border-radius: 4px;
+	   -moz-border-radius: 4px;
+		 -o-border-radius: 4px;
+			border-radius: 4px;
+	-webkit-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	 -khtml-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	   -moz-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+		 -o-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	-webkit-transition: all 0.1s linear;
+	 -khtml-transition: all 0.1s linear;
+	   -moz-transition: all 0.1s linear;
+		 -o-transition: all 0.1s linear;
+			transition: all 0.1s linear;
+}
+#btns .button:hover {
+	-webkit-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	 -khtml-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	   -moz-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+		 -o-box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			box-shadow: rgba(0,0,0,0.5) 0px 2px 5px, inset rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(0,0,0,0.25) 0px 0px 0px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+}
+#btns .button:active {
+	-webkit-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px,inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	 -khtml-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px,inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+	   -moz-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+		 -o-box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+			box-shadow: rgba(255,255,255,0.25) 0px 1px 0px, inset rgba(255,255,255,0) 0px 1px 0px, inset rgba(0,0,0,0.5) 0px 0px 5px, inset rgba(255,255,255,0.03) 0px 20px 0px, inset rgba(0,0,0,0.15) 0px -20px 20px, inset rgba(255,255,255,0.05) 0px 20px 20px;
+}
+#btns .shine {
+	display: block;
+	position: relative;
+	background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0)));
+	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+	background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+	background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00ffffff',GradientType=1 );
+	background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+	padding: 0px 12px;
+	top: -12px;
+	left: -24px;
+	height: 1px;
+	-webkit-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+	 -khtml-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+	   -moz-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+		 -o-box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+			box-shadow: rgba(255,255,255,0.2) 0px 1px 5px;
+	-webkit-transition: all 0.3s ease-in-out;
+	 -khtml-transition: all 0.3s ease-in-out;
+	   -moz-transition: all 0.3s ease-in-out;
+		 -o-transition: all 0.3s ease-in-out;
+			transition: all 0.3s ease-in-out;
+}
+#btns .button:hover .shine {left: 24px;}
+#btns .button:active .shine {opacity: 0;}
+
+#btns .button.gray {background: #555;}
+#btns .button.blue {background: #3a617e;}
+#btns .button.green {background: #477343;}
+#btns .button.red {background: #723131;}
+#btns .button.purple {background: #4b3f5e;}
+#btns .button.orange {background: #624529;}
+</code>
+</pre>
 	</section>
 	
 </div>
