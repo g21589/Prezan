@@ -75,6 +75,10 @@
 	<!-- New Style Alert -->
 	<script src="js/alertify.js" type="text/javascript"></script>
 	
+	<!-- Raphael.js and freehand drawing-->
+	<script src="js/raphael.js" type="text/javascript"></script>
+	<script src="js/freehand_drawing.js" type="text/javascript"></script>
+	
 	<script>
 	
 	$('.reveal').load('slides.html', function() {
@@ -87,9 +91,9 @@
 		var context = new audioContext();
 		var recorder;
 		var bufferSize = 16384;
-		
+
 		socket.on('connect', function () {
-		
+			initFreehabdDrawing();	//ready for firefox
 			socket.send('speaker_connect');
 
 			socket.on('message', function (msg) {
@@ -107,6 +111,7 @@
 			
 			// ready事件
 			Reveal.addEventListener('ready', function(e) {
+				initFreehabdDrawing();	//ready for other browsers
 				currentSlide.indexh = e.indexh;
 				currentSlide.indexv = e.indexv;
 				currentSlide.indexf = 0;
@@ -119,6 +124,7 @@
 				currentSlide.indexv = e.indexv;
 				currentSlide.indexf = 0;
 				socket.emit('speaker_chs', currentSlide);
+				console.log(currentSlide.indexh);
 			});
 			
 			// Mousemove事件
@@ -178,7 +184,6 @@
 			})();
 			
 		});
-
 	});
 	
 	</script>
