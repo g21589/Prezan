@@ -7,14 +7,15 @@ function matrixToArray(str) {
     return str.match(/(-?[0-9\.]+)/g);
 }
 
-function initCanvas() {
+function initCanvas(canvasId) {
 
 	var w = $('.reveal').width();
 	var h = $('.reveal').height();	
 	var scale = 1 / matrixToArray( $('.slides').css('transform') )[0];
-	var $canvas;
-	$('.present').prepend('<div class="canvas"></div>');
-	$canvas = $('.canvas');
+
+	$('.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
+	$canvas = $('#' + canvasId);
+
 	$canvas.css({		
 		'-webkit-transform': 'scale(' + scale + ')',
 		'-moz-transform': 'scale(' + scale + ')',
@@ -23,16 +24,25 @@ function initCanvas() {
 		'transform': 'scale(' + scale + ')'
 	});	
 	$canvas.width(w).height(h).css('position', 'fixed');
+
 	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
 		$canvas.offset({top: 0, left: 0});
 	}	
+	
 	//$canvas.css("background-color", "#eee");
 }
 
-function initFreehabdDrawing() {
-	initCanvas();
-	
-    $canvas = $('.canvas');
+function initFreehabdDrawing(indexh, indexv) {
+
+	var canvasId = 'canvas' + indexh + '_' + indexv;
+	if( $('#' + canvasId).length == 0 ) {
+		initCanvas(canvasId);
+	}
+	else {
+		console.log('canvas exist at (' + indexh + ', ' + indexv + ')!');
+		return;
+	}
+
     g_masterPaper = Raphael($canvas[0], $canvas.width(), $canvas.height());
 	g_masterPaper.setViewBox(0,0, $canvas.width(), $canvas.height(), true);
 	g_masterPaper.setSize('100%', '100%');
