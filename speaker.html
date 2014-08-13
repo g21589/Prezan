@@ -69,6 +69,31 @@
 		text-shadow: 0px 0px 20px #F9534f;
 		transform: rotate(360deg) scale(1.2);
 	}
+	#tools {
+		position: absolute;
+		bottom: 5px;
+		left: 0px;
+		margin: 0px;
+	}
+	#tools>div {
+		margin: 20px 15px;
+	}
+	#tools span {
+		color: white;
+		font-size: 28px;
+		transition: all 0.3s ease-out;
+		cursor: pointer;
+	}
+	#tools span.active {
+		color: #F00;
+		text-shadow: 0px 0px 10px #F00;
+		transform: scale(1.3);
+	}
+	#tools span:hover {
+		color: #F00;
+		text-shadow: 0px 0px 3px #F9534f;
+		transform: scale(1.5);
+	}
 	</style>
 	
 </head>
@@ -86,6 +111,15 @@
 	<div id="config">
 		<span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#cfgModal"></span>
 	</div>
+	
+	<!-- Tool -->
+	<div id="tools">
+		<div><span class="glyphicon glyphicon-pencil active"></span></div>
+		<div><span class="glyphicon glyphicon-map-marker"></span></div>
+		<div><span class="glyphicon glyphicon-eye-open"></span></div>
+	</div>
+	
+	<!-- Config Modal -->
 	<div class="modal fade" id="cfgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 		<div class="modal-content">
