@@ -46,7 +46,7 @@
 	#mouse {
 		position: absolute;
 		color: #FFF;
-		z-index: 999;
+		z-index: 99999;
 	}
 	.mouse_animation {
 		position: absolute;
@@ -60,6 +60,7 @@
 		-webkit-animation-timing-function: ease-in;
 		animation: clickEffect 0.75s;
 		animation-timing-function: ease-in;
+		z-index: 99999;
 	}
 	@-webkit-keyframes clickEffect {
 		from {
@@ -109,6 +110,11 @@
 		</div>	
 		<!-------------->
 		
+		<audio id="radio" autoplay>
+			<source src="http://127.0.0.1:5566/" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		
 	</div>
 	
 	<div id="sb-site" class="reveal">
@@ -136,51 +142,74 @@
 	
 	<script src="js/QA_script.js" type="text/javascript"></script>
 	
-	<script>	
+	<script>
 	
-	//initialize jQery TE
-	$('.jqte').jqte({"source": false});
+	var delayInMS = 0;
 	
-	//for sliderbars & note
-	$(document).ready(function() {
-		//initialize sliderbars		
-		var mySlidebars = new $.slidebars();
-		/*
-		//resize sliderbars
-		var resizeId;
-		var sliderbarsWidth = $('.sb-slidebar').width();						
-		$(window).resize(function() {
-			clearTimeout(resizeId);
-			resizeId = setTimeout(function() {	
-				if(mySlidebars.slidebars.active('right')) {
-					var button = $('#hide_button img');
-					button.width(48 * ($('.sb-slidebar').width() / sliderbarsWidth) );	//48 is width of icon
-				}
-			}, 100);				
-		});
-		*/
-		//save note value on change
+	/**
+	 * setupNote
+	 */
+	function setupNote() {
+		
+		// Save note value on change
 		var changeId;
 		var note = $('#note');
 		var noteEditor = note.parent().prev();
-		noteEditor.html(localStorage.note);			
+		noteEditor.html(localStorage.note);
 		noteEditor.bind('change keyup paste', function() {
 			clearTimeout(changeId);
 			changeId = setTimeout(function() {
 				console.log(note.val());
 				localStorage.note = note.val();
 			}, 100);				
-		});	
+		});
+		
+	}
+	
+	/**
+	 * setupRadio
+	 */
+	function setupRadio() {
+		
+		// 自動撥放聲音串流
+		var radio = $("#radio").get(0);
+		radio.play();
+		
+		delayInMS = Date.now();
+		
+		radio.addEventListener("canplay", function() {
+			console.log("canplay");
+			delayInMS = Date.now() - delayInMS;
+		});
+		
+		/*
+		radio.addEventListener("timeupdate", function() {
+			console.log({"delay": delayInMS, "currentTime": radio.currentTime});
+		});
+		*/
+		
+	}
+	
+	$(document).ready(function() {
+	
+		// Initialize sliderbars
+		var mySlidebars = new $.slidebars();
+		
+		// Initialize jQery TE
+		$('.jqte').jqte({"source": false});
+		
+		// Initialize Note
+		setupNote();
+		
+		// Initialize Radio
+		setupRadio();
+		
 	});
 	
 	$('.reveal').load('slides.html', function() {
 		
 		var socket = io('http://127.0.0.1:8080/');
-		var output = "";
-		
-		audioContext = window.AudioContext || window.webkitAudioContext;
-		var context = new audioContext();
-		
+
 		Reveal.addEventListener('ready', function( event ) {
 			Reveal.configure({ 
 				controls: false, 
@@ -192,73 +221,62 @@
     
 			socket.send('audience_connect');
 			
+			// message事件
 			socket.on('message', function (msg) {
 				console.log(msg);
 			});
 			
+			// audience_chs事件
 			socket.on('audience_chs', function(e) {
-				Reveal.slide(e.indexh, e.indexv, e.indexf);
+				//setTimeout(function() {
+					Reveal.slide(e.indexh, e.indexv, e.indexf);
+				//}, delayInMS);
 			});
 			
 			// Mousemove事件
 			socket.on('mousemove', function(mousePos) {
-				$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
+				//setTimeout(function() {
+					$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
+				//}, delayInMS);
 			});
 			
 			// Mouseclick事件
 			socket.on('click', function (mousePos) {
-				var x = mousePos.x * $(window).width();
-				var y = mousePos.y * $(window).height();
-				$('#mouse').hide();
-				var element = document.elementFromPoint(x, y);
-				$('#mouse').show();
-				if ($(element).get(0).tagName == 'VIDEO') {
-					var v = $(element).get(0);
-					v.paused ? v.play() : v.pause();
-				} else {
-					$(element).click();
-				}
-				
-				// 滑鼠點擊動畫
-				var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
-				$("body").append(clickCircle);
-				setTimeout(function() { clickCircle.remove() }, 700);
-				
+				//setTimeout(function() {
+					var x = mousePos.x * $(window).width();
+					var y = mousePos.y * $(window).height();
+					$('#mouse').hide();
+					var element = document.elementFromPoint(x, y);
+					$('#mouse').show();
+					
+					if ($(element).get(0).tagName == 'VIDEO') {
+						var v = $(element).get(0);
+						v.paused ? v.play() : v.pause();
+					} else if ($(element).is("[clickable]")) {
+						$(element).click();
+					}
+
+					
+					// 滑鼠點擊動畫
+					var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
+					$("body").append(clickCircle);
+					setTimeout(function() { clickCircle.remove() }, 700);
+				//}, delayInMS);
 			});
 			
 			// 問問題
 			$("#QA_field").on("click", "#ask_submit", function() {
-				var text = $('#QA_content').val();
-				socket.emit('QA_ask', text);
+				//setTimeout(function() {
+					var text = $('#QA_content').val();
+					socket.emit('QA_ask', text);
+				//}, delayInMS);
 			});
 			
 			// Ask_msg
 			socket.on('Ask_msg', function(questions) {
-				alertify.success(questions);
-			});
-			
-			// audio
-			socket.on('mp3', function (audioData) {
-			
-				context.decodeAudioData(audioData, function(audioBuffer) {
-					if (! audioBuffer) {
-						console.error('Error decoding file data.');
-						return;
-					}
-					
-					var source = context.createBufferSource();
-					source.buffer = audioBuffer;
-					
-					// connect the node to the destination
-					source.connect(context.destination);
-					
-					// Play the audio
-					source.start(0);
-					
-				}, function (error) {
-					console.error('Error decoding file data.');
-				});
-			
+				//setTimeout(function() {
+					alertify.success(questions);
+				//}, delayInMS);
 			});
 			
 		});

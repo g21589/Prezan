@@ -74,7 +74,7 @@ Reveal.initialize({
 
 		<section>
 			<h2>解放你的投影片</h2>
-			<p style="font-size: 28px;">透過 HTML5 技術，建造一個演講時給予聽眾和講者互動的即時系統。使聽眾可以透過簡報和會眾進行交流，此外，聽眾亦可使用系統取得講者簡報、做筆記或者針對簡報提出問題。</p>
+			<p style="font-size: 28px;">透過 HTML5 技術，建造一個演講時給予聽眾和講者互動的即時系統，<br>使聽眾可以透過簡報和會眾進行交流。<br>此外，聽眾亦可使用系統取得講者簡報、做筆記或者針對簡報提出問題。</p>
 		</section>
 		
 		<section>
@@ -103,6 +103,8 @@ Reveal.initialize({
 			<li>Slidebars (<a href="http://plugins.adchsm.me/slidebars">http://plugins.adchsm.me/slidebars</a>)</li>
 			<li>alertify.js (<a href="http://fabien-d.github.io/alertify.js">http://fabien-d.github.io/alertify.js</a>)</li>
 			<li>Node-LAME (<a href="https://github.com/TooTallNate/node-lame">https://github.com/TooTallNate/node-lame</a>)</li>
+			<li>Bootstrap (<a href="http://getbootstrap.com/">http://getbootstrap.com/</a>)</li>
+			
 		</ol>
 		
 	</section>
@@ -110,7 +112,7 @@ Reveal.initialize({
 	<section>
 		<h3>Video</h3>
 		<p>
-			<video controls="controls">
+			<video controls="controls" clickable>
 				<source src="video/gizmo.mp4" type="video/mp4" />
 				<source src="video/gizmo.webm" type="video/webm" />
 				<source src="video/gizmo.ogv" type="video/ogg" />
@@ -122,13 +124,13 @@ Reveal.initialize({
 	<section>
 		<h3>Basic Piano</h3>
 		<div id="keyboard">
-			<span class="key" f="262">C</span>
-			<span class="key" f="294">D</span>
-			<span class="key" f="330">E</span>
-			<span class="key" f="349">F</span>
-			<span class="key" f="392">G</span>
-			<span class="key" f="440">A</span>
-			<span class="key" f="494">B</span>
+			<span class="key" f="262" clickable>C</span>
+			<span class="key" f="294" clickable>D</span>
+			<span class="key" f="330" clickable>E</span>
+			<span class="key" f="349" clickable>F</span>
+			<span class="key" f="392" clickable>G</span>
+			<span class="key" f="440" clickable>A</span>
+			<span class="key" f="494" clickable>B</span>
 		</div>
 		<script type="text/javascript">
 		var context;
@@ -167,7 +169,7 @@ Reveal.initialize({
 			$("#keyboard").html("Sorry!<br>Web Audio API is not supported in this browser!");
 		}
 		</script>
-<pre style="max-height: 250px;">
+<pre style="max-height: 250px; overflow: visible;">
 <code class="javascript" style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; font-size: 14pt;">var context;
 try {
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;	// Fix up for prefixing
@@ -210,12 +212,12 @@ try {
 	<section>
 		<h3>Fancy CSS3 Button</h3>
 		<div id="btns">
-			<div class="button gray"><div class="shine"></div>Button</div>
-			<div class="button blue"><div class="shine"></div>Button</div><br/>
-			<div class="button green"><div class="shine"></div>Button</div>
-			<div class="button red"><div class="shine"></div>Button</div>
-			<div class="button purple"><div class="shine"></div>Button</div>
-			<div class="button orange"><div class="shine"></div>Button</div>
+			<div class="button gray" clickable><div class="shine"></div>Button</div>
+			<div class="button blue" clickable><div class="shine"></div>Button</div><br/>
+			<div class="button green" clickable><div class="shine"></div>Button</div>
+			<div class="button red" clickable><div class="shine"></div>Button</div>
+			<div class="button purple" clickable><div class="shine"></div>Button</div>
+			<div class="button orange" clickable><div class="shine"></div>Button</div>
 		</div>
 		<style>
 		#btns .button {
@@ -299,7 +301,7 @@ try {
 		#btns .button.purple {background: #4b3f5e;}
 		#btns .button.orange {background: #624529;}
 		</style>
-<pre style="max-height: 250px;">
+<pre style="max-height: 250px; overflow: visible;">
 <code class="css" style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; font-size: 14pt;">#btns .button {
 	min-height: 1.5em;
 	display: inline-block;

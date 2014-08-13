@@ -12,7 +12,10 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+	
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	
 	<link rel="stylesheet" href="css/reveal.min.css">
 	<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 	
@@ -51,6 +54,21 @@
 	#online:hover {
 		color: #F00;
 	}
+	#config {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		margin: 8px 8px 8px 8px;
+		color: white;
+		font-size: 28px;
+		transition: all 0.3s ease-out;
+		cursor: pointer;
+	}
+	#config:hover {
+		color: #F00;
+		text-shadow: 0px 0px 20px #F9534f;
+		transform: rotate(360deg) scale(1.2);
+	}
 	</style>
 	
 </head>
@@ -61,7 +79,62 @@
 
 	</div>
 	
+	<!-- Online counter -->
 	<div id="online">Online: <span>0</span></div>
+	
+	<!-- Config -->
+	<div id="config">
+		<span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#cfgModal"></span>
+	</div>
+	<div class="modal fade" id="cfgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-cog"></span> 設定 (Configure)</h4>
+		  </div>
+		  <div class="modal-body">
+		  
+           <form class="form-horizontal" role="form">
+				
+			  <div class="form-group">
+			    <label for="syn_slide" class="col-sm-3 control-label">投影片同步 <span class="glyphicon glyphicon-transfer"></span></label>
+				<div class="col-sm-9">
+				  <div class="btn-group" data-toggle="buttons">
+				    <label class="btn btn-primary active">
+					  <input type="radio" name="cfg_syn_slide" id="option1" checked><span class="glyphicon glyphicon-ok"></span> 開啟
+					</label>
+					<label class="btn btn-primary">
+					  <input type="radio" name="cfg_syn_slide" id="option2"><span class="glyphicon glyphicon-remove"></span> 關閉
+					</label>
+				  </div>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="syn_radio" class="col-sm-3 control-label">語音廣播 <span class="glyphicon glyphicon-music"></span></label>
+				<div class="col-sm-9">
+				  <div class="btn-group" data-toggle="buttons">
+				    <label class="btn btn-primary">
+					  <input type="radio" name="cfg_radio" id="option3" value="on"><span class="glyphicon glyphicon-ok"></span> 開啟
+					</label>
+					<label class="btn btn-primary active">
+					  <input type="radio" name="cfg_radio" id="option4" value="off" checked><span class="glyphicon glyphicon-remove"></span> 關閉
+					</label>
+				  </div>
+				</div>
+			  </div>
+			  
+		    </form>
+		  
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-success" data-dismiss="modal">完成</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
 	<!-- jQuery -->
 	<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
 	
@@ -75,18 +148,35 @@
 	<!-- New Style Alert -->
 	<script src="js/alertify.js" type="text/javascript"></script>
 	
-	<script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
 	
+	<script type="text/javascript">
+	
+	var socket = null;
+	var currentMousePos = { x: -1, y: -1 };
+	var currentSlide = { indexh: 0, indexv: 0, indexf: 0};
+	
+	audioContext = window.AudioContext || window.webkitAudioContext;
+	var context = new audioContext();
+	var recorder = null;
+	var audioStream = null;
+	var bufferSize = 16384;
+	
+	// ready事件
+	Reveal.addEventListener('ready', function(e) {
+		currentSlide.indexh = e.indexh;
+		currentSlide.indexv = e.indexv;
+		currentSlide.indexf = 0;
+		if (socket !== null) {
+			socket.emit('speaker_chs', currentSlide);
+		}
+	});
+	
+	// 載入投影片內容
 	$('.reveal').load('slides.html', function() {
 		
-		var socket = io('http://127.0.0.1:8080/');
-		var currentMousePos = { x: -1, y: -1 };
-		var currentSlide = { indexh: 0, indexv: 0, indexf: 0};
-		
-		audioContext = window.AudioContext || window.webkitAudioContext;
-		var context = new audioContext();
-		var recorder;
-		var bufferSize = 16384;
+		socket = io('http://127.0.0.1:8080/');
 		
 		socket.on('connect', function () {
 		
@@ -96,6 +186,7 @@
 				console.log(msg);
 			});
 			
+			// online_counter事件
 			socket.on('online_counter', function(onlineCounter) {
 				$('#online span').text(onlineCounter);
 			});
@@ -105,12 +196,14 @@
 				alertify.alert(questions);
 			});
 			
-			// ready事件
+			// ready事件 (double check)
 			Reveal.addEventListener('ready', function(e) {
 				currentSlide.indexh = e.indexh;
 				currentSlide.indexv = e.indexv;
 				currentSlide.indexf = 0;
-				socket.emit('speaker_chs', currentSlide);
+				if (socket !== null) {
+					socket.emit('speaker_chs', currentSlide);
+				}
 			});
 			
 			// slidechanged事件
@@ -132,56 +225,85 @@
 			$(document).click(function(event) {
 				currentMousePos.x = event.pageX / $(window).width();
 				currentMousePos.y = event.pageY / $(window).height();
-				socket.emit('click', currentMousePos);
+				//var element = document.elementFromPoint(event.pageX, event.pageY);
+				//aria-hidden
+				if ($("#cfgModal").attr("aria-hidden") === "true") {
+					socket.emit('click', currentMousePos);
+				}
 			});
-			
-			(function() {
-			
-				navigator.getUserMedia = (
-					navigator.getUserMedia || navigator.webkitGetUserMedia ||
-					navigator.mozGetUserMedia || navigator.msGetUserMedia
-				);
-
-				if (navigator.getUserMedia) {
-				
-					navigator.getUserMedia({audio: true}, function (stream) {
-					
-						var audioInput = context.createMediaStreamSource(stream);
-						
-						recorder = context.createScriptProcessor(bufferSize, 1, 1);
-						recorder.onaudioprocess = function (event) {
-							var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
-							socket.emit('audio', audioData);	// send audio_data to server
-						}
-						
-						audioInput.connect(recorder);
-						recorder.connect(context.destination);
-						
-					}, function (err) {
-						console.log("The following error occured: " + err);
-					});
-					
-				} else {
-				   console.log("getUserMedia not supported");
-				}
-				
-				function convertoFloat32ToInt16(buffer) {
-					var l = buffer.length;
-					var buf = new Int16Array(l);
-
-					while (l--) {
-						buf[l] = buffer[l] * 0xFFFF;    // convert to 16 bit
-					}
-					return buf.buffer;
-				}
-			
-			})();
 			
 		});
 
 	});
 	
-	</script>
+	/**
+	 * 開始語音廣播
+	 */
+	function startRadio() {
+			
+		navigator.getUserMedia = (
+			navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia
+		);
 
+		if (navigator.getUserMedia && socket != null) {
+		
+			navigator.getUserMedia({audio: true}, function (stream) {
+				
+				audioStream = stream;
+				var audioInput = context.createMediaStreamSource(audioStream);
+				
+				recorder = context.createScriptProcessor(bufferSize, 1, 1);
+				recorder.onaudioprocess = function (event) {
+					var audioData = convertoFloat32ToInt16(event.inputBuffer.getChannelData(0));
+					socket.emit('audio', audioData);	// send audio_data to server
+				}
+				
+				audioInput.connect(recorder);
+				recorder.connect(context.destination);
+				
+			}, function (err) {
+				console.log("The following error occured: " + err);
+			});
+			
+		} else {
+		   console.log("getUserMedia not supported");
+		}
+		
+	}
+	
+	$(document).ready(function() {
+		
+		// 廣播開關
+		$("input[name=cfg_radio]").change(function() {
+			if (this.value == "on") {
+				startRadio();
+			} else {
+				if (audioStream === null) return;
+				audioStream.stop();
+				audioStream = null;
+				recorder = null;
+			}
+		});
+		
+	});
+	
+	/**
+	 * Convert Float32 buffer to Int16 buffer
+	 * @param buffer Float32
+	 * @return buffer Int16
+	 */
+	function convertoFloat32ToInt16(buffer) {
+		var l = buffer.length;
+		var buf = new Int16Array(l);
+
+		while (l--) {
+			buf[l] = buffer[l] * 0xFFFF;    // convert to 16 bit
+		}
+		return buf.buffer;
+	}
+	
+	</script>
+	
 </body>
 </html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>放音</title>
+	<meta name="description" content="HTML5 Presentation">
+	<meta name="author" content="1KM">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+
+<body>
+	
+	<h1>放音</h1>
+	<h3>HTML5 Web Audio API play MP3 data received from socket.io. Few seconds delay but interrupt between two chunk.</h3>
+	
+	<h3>Browser Test</h3>
+	<ul>
+		<li>Chrome 36+</li>
+		<li>Firefox 31 (Can not decode mp3 by decodeAudioData())</li>
+	</ul>
+	
+	<!-- jQuery -->
+	<script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>
+	
+	<!-- socket.io -->
+	<script src="../js/socket.io-1.0.6.min.js" type="text/javascript"></script>
+
+	<script>
+	
+	var socket = io('http://127.0.0.1:8080/');
+	
+	audioContext = window.AudioContext || window.webkitAudioContext;
+	var context = new audioContext();
+	
+	/**
+	 * Appends two ArrayBuffers into a new one.
+	 * 
+	 * @param {ArrayBuffer} buffer1 The first buffer.
+	 * @param {ArrayBuffer} buffer2 The second buffer.
+	 */
+	function _appendBuffer(buffer1, buffer2) {
+		var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+		tmp.set(new Uint8Array(buffer1), 0);
+		tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+		return tmp.buffer;
+	};
+	
+	var audioDataBuffer1 = new Uint8Array(0);
+	var audioDataBuffer2 = new Uint8Array(0);
+	var isBuffer1 = true;
+	var isPlay = false;
+	
+	//var PCMbuffer = null;
+	
+	function play() {
+		
+		console.log("Play0 " + new Date().getTime());
+		
+		if (isBuffer1) {
+		
+			isBuffer1 = !isBuffer1;
+			
+			context.decodeAudioData(audioDataBuffer1, function(PCMbuffer) {
+				console.log("Play1 " + new Date().getTime());
+			
+				if (!PCMbuffer) { console.error('Error decoding file data.'); return; }
+				
+				var source = context.createBufferSource();
+				source.buffer = PCMbuffer;
+				source.connect(context.destination);
+				source.start(0);
+				
+				//console.log(source);
+				
+			}, function (error) {
+				console.error('Error decoding file data.');
+			});
+			
+			audioDataBuffer2 = new Uint8Array(0);
+			
+		} else {
+			
+			isBuffer1 = !isBuffer1;
+			
+			context.decodeAudioData(audioDataBuffer2, function(PCMbuffer) {
+				console.log("Play2 " + new Date().getTime());
+			
+				if (!PCMbuffer) { console.error('Error decoding file data.'); return; }
+				
+				var source = context.createBufferSource();
+				source.buffer = PCMbuffer;
+				source.connect(context.destination);
+				source.start(0);
+				
+				//console.log(source);
+				
+			}, function (error) {
+				console.error('Error decoding file data.');
+			});
+			
+			audioDataBuffer1 = new Uint8Array(0);
+			
+		}
+
+	}
+	
+	socket.on('connect', function () {
+		
+		console.log("connect");
+		
+		socket.on('mp3', function (audioData) {
+			
+			if (isBuffer1) {
+				audioDataBuffer1 = _appendBuffer(audioDataBuffer1, audioData);
+			} else {
+				audioDataBuffer2 = _appendBuffer(audioDataBuffer2, audioData);
+			}
+			
+			if (!isPlay) {
+				isPlay = true;
+				setInterval(play, 500);
+			}
+			
+		});
+		
+	});
+	</script>
+
+</body>
+</html>

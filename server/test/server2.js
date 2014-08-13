@@ -1,5 +1,7 @@
 var fs = require('fs');
 var lame = require('lame');
+var ogg = require('ogg');
+var vorbis = require('vorbis');
 var path = require('path');
 var http = require('http');
 var io = require('socket.io').listen(8080);
@@ -23,6 +25,17 @@ var encoder = new lame.Encoder({
 	bitRate: 32,
 	outSampleRate: 44100,
 	mode: lame.MONO // c (default), JOINTSTEREO, DUALCHANNEL or MONO
+});
+
+var oe = new ogg.Encoder();
+var ve = new vorbis.Encoder({
+	channels: 1,
+	sampleRate: 44100,
+	float: true,
+	signed: true,
+	bitDepth: 32,
+	
+	quality: -0.1
 });
 
 console.log('Start server!!');
@@ -65,7 +78,8 @@ io.sockets.on('connection', function (socket) {
 	
 	// 送出Audio錄音緩衝區事件
 	socket.on('audio', function (audioData) {
-		encoder.write(audioData);
+		//encoder.write(audioData);
+		ve.write(audioData);
 	});
 	
 	// QA_ask事件
@@ -90,20 +104,48 @@ encoder.on("data", function(data) {
 		newBuffer = data;
 	} else {
 		newBuffer = Buffer.concat([newBuffer, data]);
-		if (newBuffer.length >= 8192) {
+		if (newBuffer.length >= 512) {
 			io.emit('mp3', newBuffer);
 			newBuffer = null;
 		}
 	}
 	
+	//io.emit('mp3', data);
+	
 });
 */
+
 // 在Server端輸出到檔案(側錄)
 //encoder.pipe(fs.createWriteStream(path.resolve(__dirname, 'record.mp3')));
 
-encoder.on("data", function(data) {
+// *MUST* be PCM float 32-bit signed little-endian samples.
+// channels and sample rate are configurable but default to 2 and 44,100hz.
+//process.stdin.pipe(ve);
 
+// send the encoded Vorbis pages to the Ogg encoder
+ve.pipe(oe.stream());
+
+// write the produced Ogg file with Vorbis audio to
+//oe.pipe(fs.createWriteStream(path.resolve(__dirname, 'record.ogg')));
+
+/*
+var newBuffer = null;
+oe.on("data", function(data) {
+	
+	if (newBuffer == null) {
+		newBuffer = data;
+	} else {
+		newBuffer = Buffer.concat([newBuffer, data]);
+		if (newBuffer.length >= 512) {
+			io.emit('mp3', newBuffer);
+			newBuffer = null;
+		}
+	}
+	
+	//io.emit('mp3', data);
+	
 });
+*/
 
 // MP3 Streaming Server by HTTP
 http.createServer(function(request, response) {
@@ -112,44 +154,26 @@ http.createServer(function(request, response) {
 		console.log("finish");
 	});
  
-	var total = 999999999;
-	var start = 500000;
+	var total = 10000000;
+	var start = 0;
 	var end = total - 1;
 	
 	var header = {
 		"Cache-Control" : "no-cache, no-store, must-revalidate",
-		"Content-type": "audio/mpeg",
+		"Content-type": "application/ogg",
 		"Connection": "Keep-Alive"
 	};
-	header["Accept-Ranges"] = "bytes";
-	header["Content-Range"] = "bytes " + start + "-" + end + "/" + (total);
+	//header["Content-Range"] = "bytes " + start + "-" + end + "/" + (total);
+	//header["Accept-Ranges"] = "bytes";
 	//header["Content-Length"] = (end - start) + 1;
-	header['Transfer-Encoding'] = 'chunked';
+	//header['Transfer-Encoding'] = 'chunked';
 	
 	response.writeHead(200, header);
 	
-	encoder.pipe(response)
+	oe.pipe(response)
 		.on('close', function () {
-			console.error('End pipe');
-			encoder.unpipe(response);
+			console.error('close');
 			response.end();
 		});
-	
-	/*
-	var r = parseInt(Math.random() * 100 + 1);
-	
-	mp3header = new Buffer(4);
-	mp3header.writeUInt32LE(0xfffb10c4, 0);
-	response.write(mp3header, "binary");
-	
-	encoder.on("data", function(data) {
-		response.write(data, "binary");
-		console.log(r + ":");
-	})
-	.on('close', function () {
-		console.error('close');
-		response.end();
-	});
-	*/
 	
 }).listen(5566);
