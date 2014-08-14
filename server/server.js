@@ -11,6 +11,7 @@ var currentSlide = {
 };
 
 var onlineCounter = 0;
+var isRadioPlay = false;
 
 // create the Encoder instance
 var encoder = new lame.Encoder({
@@ -36,6 +37,9 @@ io.sockets.on('connection', function (socket) {
 		console.log(msg);
 		if (msg == 'audience_connect') {
 			socket.emit('audience_chs', currentSlide);
+			if (isRadioPlay) {
+				socket.emit('start_radio', "");
+			}
 		}
 	});
 	
@@ -66,6 +70,18 @@ io.sockets.on('connection', function (socket) {
 	// 送出Audio錄音緩衝區事件
 	socket.on('audio', function (audioData) {
 		encoder.write(audioData);
+	});
+	
+	// 開始聲音串流
+	socket.on('start_radio', function (e) {
+		socket.broadcast.emit('start_radio', e);
+		isRadioPlay = true;
+	});
+	
+	// 停止聲音串流
+	socket.on('stop_radio', function (e) {
+		socket.broadcast.emit('stop_radio', e);
+		isRadioPlay = false;
 	});
 	
 	// QA_ask事件

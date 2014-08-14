@@ -110,7 +110,7 @@
 		</div>	
 		<!-------------->
 		
-		<audio id="radio" autoplay>
+		<audio id="radio">
 			<source src="http://127.0.0.1:5566/" type="audio/mpeg">
 			Your browser does not support the audio element.
 		</audio>
@@ -201,9 +201,6 @@
 		// Initialize Note
 		setupNote();
 		
-		// Initialize Radio
-		setupRadio();
-		
 	});
 	
 	$('.reveal').load('slides.html', function() {
@@ -228,21 +225,21 @@
 			
 			// audience_chs事件
 			socket.on('audience_chs', function(e) {
-				//setTimeout(function() {
+				setTimeout(function() {
 					Reveal.slide(e.indexh, e.indexv, e.indexf);
-				//}, delayInMS);
+				}, delayInMS);
 			});
 			
 			// Mousemove事件
 			socket.on('mousemove', function(mousePos) {
-				//setTimeout(function() {
+				setTimeout(function() {
 					$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
-				//}, delayInMS);
+				}, delayInMS);
 			});
 			
 			// Mouseclick事件
 			socket.on('click', function (mousePos) {
-				//setTimeout(function() {
+				setTimeout(function() {
 					var x = mousePos.x * $(window).width();
 					var y = mousePos.y * $(window).height();
 					$('#mouse').hide();
@@ -261,22 +258,28 @@
 					var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
 					$("body").append(clickCircle);
 					setTimeout(function() { clickCircle.remove() }, 700);
-				//}, delayInMS);
+				}, delayInMS);
 			});
 			
 			// 問問題
 			$("#QA_field").on("click", "#ask_submit", function() {
-				//setTimeout(function() {
+				setTimeout(function() {
 					var text = $('#QA_content').val();
 					socket.emit('QA_ask', text);
-				//}, delayInMS);
+				}, delayInMS);
 			});
 			
 			// Ask_msg
 			socket.on('Ask_msg', function(questions) {
-				//setTimeout(function() {
+				setTimeout(function() {
 					alertify.success(questions);
-				//}, delayInMS);
+				}, delayInMS);
+			});
+			
+			// start_radio
+			socket.on('start_radio', function() {
+				console.log('start_radio');
+				setupRadio();
 			});
 			
 		});

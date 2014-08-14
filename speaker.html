@@ -79,20 +79,19 @@
 		margin: 20px 15px;
 	}
 	#tools span {
-		color: white;
+		color: #AAA;
 		font-size: 28px;
-		transition: all 0.3s ease-out;
+		transition: all 0.2s ease-out;
 		cursor: pointer;
 	}
-	#tools span.active {
-		color: #F00;
-		text-shadow: 0px 0px 10px #F00;
-		transform: scale(1.3);
-	}
 	#tools span:hover {
+		color: #FFF;
+		transform: scale(1.2);
+	}
+	#tools span.active, #tools span.active:hover {
 		color: #F00;
-		text-shadow: 0px 0px 3px #F9534f;
-		transform: scale(1.5);
+		text-shadow: 0px 0px 1px #000, 0px 0px 5px #F00;
+		transform: scale(1.2);
 	}
 	</style>
 	
@@ -312,12 +311,18 @@
 		$("input[name=cfg_radio]").change(function() {
 			if (this.value == "on") {
 				startRadio();
+				socket.emit('start_radio', "a");
 			} else {
 				if (audioStream === null) return;
+				socket.emit('stop_radio', "a");
 				audioStream.stop();
 				audioStream = null;
 				recorder = null;
 			}
+		});
+		
+		$("#tools span").click(function() {
+			$(this).toggleClass("active");
 		});
 		
 	});
