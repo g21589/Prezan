@@ -1,4 +1,3 @@
 @echo off
-npm install socket.io
-npm install lame
-npm install winston
+::npm config set msvs_version 2012 --global
+npm install socket.io lame winston
