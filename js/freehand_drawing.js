@@ -1,6 +1,9 @@
 var g_masterPathArray;
 var g_masterDrawingBox;
 var g_masterPaper;
+var g_masterPaperArray = {};
+var g_masterBackground;
+var g_masterBackgroundArray = {};
 var $canvas;
 
 function matrixToArray(str) {
@@ -39,16 +42,19 @@ function initFreehabdDrawing(indexh, indexv) {
 		initCanvas(canvasId);
 	}
 	else {
+		$canvas = $('#' + canvasId);
 		console.log('canvas exist at (' + indexh + ', ' + indexv + ')!');
 		return;
 	}
 
-    g_masterPaper = Raphael($canvas[0], $canvas.width(), $canvas.height());
-	g_masterPaper.setViewBox(0,0, $canvas.width(), $canvas.height(), true);
-	g_masterPaper.setSize('100%', '100%');
-	$(g_masterPaper.canvas).css('z-index', 2);
+    g_masterPaperArray[indexh + '_' + indexv] = Raphael($canvas[0], $canvas.width(), $canvas.height());
+	var masterPaper = g_masterPaperArray[indexh + '_' + indexv];
+	masterPaper.setViewBox(0,0, $canvas.width(), $canvas.height(), true);
+	masterPaper.setSize('100%', '100%');
+	//$(masterPaper.canvas).css('z-index', 2);
 
-    var masterBackground = g_masterPaper.rect(0, 0, $canvas.width(), $canvas.height());
+    g_masterBackgroundArray[indexh + '_' + indexv] = masterPaper.rect(0, 0, $canvas.width(), $canvas.height());
+	var masterBackground = g_masterBackgroundArray[indexh + '_' + indexv];
     masterBackground.attr("fill", "#000");
     masterBackground.attr("fill-opacity", 0);
     masterBackground.attr("opacity", 0);
@@ -69,12 +75,14 @@ function initFreehabdDrawing(indexh, indexv) {
         this.ox = x - $canvas.offset().left;
         this.oy = y - $canvas.offset().top;
     });
+}
 
-    masterBackground.drag(
+function enablePencil(indexh, indexv) {
+    g_masterBackgroundArray[indexh + '_' + indexv].drag(
         move = function(dx, dy) {
             if (g_masterPathArray.length == 0) {
                 g_masterPathArray[0] = ["M", this.ox, this.oy];
-                g_masterDrawingBox = g_masterPaper.path(g_masterPathArray);
+                g_masterDrawingBox = g_masterPaperArray[indexh + '_' + indexv].path(g_masterPathArray);
                 g_masterDrawingBox.attr({
                     stroke: "#FF0000",
                     "stroke-width": 3
@@ -93,4 +101,8 @@ function initFreehabdDrawing(indexh, indexv) {
             //do nothing
         }
     );
+}
+
+function disablePencil(indexh, indexv) {
+	g_masterBackgroundArray[indexh + '_' + indexv].undrag();
 }

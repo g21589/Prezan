@@ -74,6 +74,7 @@
 		bottom: 5px;
 		left: 0px;
 		margin: 0px;
+		z-index: 2;
 	}
 	#tools>div {
 		margin: 20px 15px;
@@ -113,7 +114,7 @@
 	
 	<!-- Tool -->
 	<div id="tools">
-		<div><span class="glyphicon glyphicon-pencil active"></span></div>
+		<div><span id="pencil" class="glyphicon glyphicon-pencil"></span></div>
 		<div><span class="glyphicon glyphicon-map-marker"></span></div>
 		<div><span class="glyphicon glyphicon-eye-open"></span></div>
 	</div>
@@ -327,6 +328,16 @@
 		
 		$("#tools span").click(function() {
 			$(this).toggleClass("active");
+		});
+		
+		$('#pencil').click(function() {
+			if( $(this).hasClass("active") ) {
+				initFreehabdDrawing(currentSlide.indexh, currentSlide.indexv);
+				enablePencil(currentSlide.indexh, currentSlide.indexv);
+			}
+			else {
+				disablePencil(currentSlide.indexh, currentSlide.indexv);
+			}
 		});
 		
 	});
