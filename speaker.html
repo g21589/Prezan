@@ -12,7 +12,10 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+	
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	
 	<link rel="stylesheet" href="css/reveal.min.css">
 	<link rel="stylesheet" href="css/theme/blood.css" id="theme">
 	
@@ -51,6 +54,45 @@
 	#online:hover {
 		color: #F00;
 	}
+	#config {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		margin: 8px 8px 8px 8px;
+		color: white;
+		font-size: 28px;
+		transition: all 0.3s ease-out;
+		cursor: pointer;
+	}
+	#config:hover {
+		color: #F00;
+		text-shadow: 0px 0px 20px #F9534f;
+		transform: rotate(360deg) scale(1.2);
+	}
+	#tools {
+		position: absolute;
+		bottom: 5px;
+		left: 0px;
+		margin: 0px;
+	}
+	#tools>div {
+		margin: 20px 15px;
+	}
+	#tools span {
+		color: #AAA;
+		font-size: 28px;
+		transition: all 0.2s ease-out;
+		cursor: pointer;
+	}
+	#tools span:hover {
+		color: #FFF;
+		transform: scale(1.2);
+	}
+	#tools span.active, #tools span.active:hover {
+		color: #F00;
+		text-shadow: 0px 0px 1px #000, 0px 0px 5px #F00;
+		transform: scale(1.2);
+	}
 	</style>
 	
 </head>
@@ -61,7 +103,71 @@
 
 	</div>
 	
+	<!-- Online counter -->
 	<div id="online">Online: <span>0</span></div>
+	
+	<!-- Config -->
+	<div id="config">
+		<span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#cfgModal"></span>
+	</div>
+	
+	<!-- Tool -->
+	<div id="tools">
+		<div><span class="glyphicon glyphicon-pencil active"></span></div>
+		<div><span class="glyphicon glyphicon-map-marker"></span></div>
+		<div><span class="glyphicon glyphicon-eye-open"></span></div>
+	</div>
+	
+	<!-- Config Modal -->
+	<div class="modal fade" id="cfgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-cog"></span> 設定 (Configure)</h4>
+		  </div>
+		  <div class="modal-body">
+		  
+           <form class="form-horizontal" role="form">
+				
+			  <div class="form-group">
+			    <label for="syn_slide" class="col-sm-3 control-label">投影片同步 <span class="glyphicon glyphicon-transfer"></span></label>
+				<div class="col-sm-9">
+				  <div class="btn-group" data-toggle="buttons">
+				    <label class="btn btn-primary active">
+					  <input type="radio" name="cfg_syn_slide" id="option1" checked><span class="glyphicon glyphicon-ok"></span> 開啟
+					</label>
+					<label class="btn btn-primary">
+					  <input type="radio" name="cfg_syn_slide" id="option2"><span class="glyphicon glyphicon-remove"></span> 關閉
+					</label>
+				  </div>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="syn_radio" class="col-sm-3 control-label">語音廣播 <span class="glyphicon glyphicon-music"></span></label>
+				<div class="col-sm-9">
+				  <div class="btn-group" data-toggle="buttons">
+				    <label class="btn btn-primary">
+					  <input type="radio" name="cfg_radio" id="option3" value="on"><span class="glyphicon glyphicon-ok"></span> 開啟
+					</label>
+					<label class="btn btn-primary active">
+					  <input type="radio" name="cfg_radio" id="option4" value="off" checked><span class="glyphicon glyphicon-remove"></span> 關閉
+					</label>
+				  </div>
+				</div>
+			  </div>
+			  
+		    </form>
+		  
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-success" data-dismiss="modal">完成</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
 	<!-- jQuery -->
 	<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
 	
