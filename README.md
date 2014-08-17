@@ -1,5 +1,6 @@
 Prezan
 ======
+[![MIT License][license-image]][license-url]
 
 HTML5 即時簡報聽眾系統
 
@@ -8,7 +9,7 @@ HTML5 即時簡報聽眾系統
 Version
 ----
 
-0.2.8
+0.3.5
 
 Install on Ubuntu 14.04 Server
 ----
@@ -27,11 +28,13 @@ sudo apt-get install nodejs
 git clone https://github.com/g21589/Prezan.git Prezan
 cd Prezan/server
 
-sudo npm install socket.io
-sudo npm install lame
+sudo npm install socket.io lame winston
 ```
 
 License
 ----
 
 MIT
+
+[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
+[license-url]: LICENSE
