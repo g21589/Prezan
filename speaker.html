@@ -93,13 +93,18 @@
 		text-shadow: 0px 0px 1px #000, 0px 0px 5px #F00;
 		transform: scale(1.2);
 	}
+	#editor {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+	}
 	</style>
 	
 </head>
 
 <body>
 
-	<div class="reveal">
+	<div class="reveal" id="reveal">
 
 	</div>
 	
@@ -114,9 +119,12 @@
 	<!-- Tool -->
 	<div id="tools">
 		<div><span class="glyphicon glyphicon-pencil active"></span></div>
+		<div><span id="tool-editor" class="glyphicon glyphicon-edit"></span></div>
 		<div><span class="glyphicon glyphicon-map-marker"></span></div>
-		<div><span class="glyphicon glyphicon-eye-open"></span></div>
 	</div>
+	
+	<!-- Editor -->
+	<div id="editor"></div>
 	
 	<!-- Config Modal -->
 	<div class="modal fade" id="cfgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -158,6 +166,20 @@
 				</div>
 			  </div>
 			  
+			  <div class="form-group">
+				<label for="voice_ch_slide" class="col-sm-3 control-label">語音切換投影片 <span class="glyphicon glyphicon-resize-horizontal"></span></label>
+				<div class="col-sm-9">
+				  <div class="btn-group" data-toggle="buttons">
+				    <label class="btn btn-primary">
+					  <input type="radio" name="voice_ch_slide" id="option5" value="on"><span class="glyphicon glyphicon-ok"></span> 開啟
+					</label>
+					<label class="btn btn-primary active">
+					  <input type="radio" name="voice_ch_slide" id="option6" value="off" checked><span class="glyphicon glyphicon-remove"></span> 關閉
+					</label>
+				  </div>
+				</div>
+			  </div>
+			  
 		    </form>
 		  
 		  </div>
@@ -184,11 +206,16 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="js/bootstrap.min.js"></script>
 	
+	<!-- TinyMCE Editor -->
+	<script src="js/tinymce/tinymce.min.js"></script>
+	<script src="js/tinymce/jquery.tinymce.min.js"></script>
+	
 	<script type="text/javascript">
 	
 	var socket = null;
 	var currentMousePos = { x: -1, y: -1 };
 	var currentSlide = { indexh: 0, indexv: 0, indexf: 0};
+	var isSlideReady = false;
 	
 	audioContext = window.AudioContext || window.webkitAudioContext;
 	var context = new audioContext();
@@ -196,15 +223,10 @@
 	var audioStream = null;
 	var bufferSize = 16384;
 	
+	var recognizer = null;
+	
 	// ready事件
-	Reveal.addEventListener('ready', function(e) {
-		currentSlide.indexh = e.indexh;
-		currentSlide.indexv = e.indexv;
-		currentSlide.indexf = 0;
-		if (socket !== null) {
-			socket.emit('speaker_chs', currentSlide);
-		}
-	});
+	Reveal.addEventListener('ready', slideReady);
 	
 	// 載入投影片內容
 	$('.reveal').load('slides.html', function() {
@@ -230,14 +252,7 @@
 			});
 			
 			// ready事件 (double check)
-			Reveal.addEventListener('ready', function(e) {
-				currentSlide.indexh = e.indexh;
-				currentSlide.indexv = e.indexv;
-				currentSlide.indexf = 0;
-				if (socket !== null) {
-					socket.emit('speaker_chs', currentSlide);
-				}
-			});
+			Reveal.addEventListener('ready', slideReady);
 			
 			// slidechanged事件
 			Reveal.addEventListener('slidechanged', function(e) {
@@ -268,6 +283,52 @@
 		});
 
 	});
+	
+	$(document).ready(function() {
+		
+		// 廣播開關
+		$("input[name=cfg_radio]").change(function() {
+			if (this.value == "on") {
+				startRadio();
+				socket.emit('start_radio', "a");
+			} else {
+				if (audioStream === null) return;
+				socket.emit('stop_radio', "a");
+				audioStream.stop();
+				audioStream = null;
+				recorder = null;
+			}
+		});
+		
+		// 語音切換投影片開關
+		$("input[name=voice_ch_slide]").change(function() {
+			if (this.value == "on") {
+				startSpeechRecognition();
+			} else {
+				recognizer.stop();
+				recognizer = null;
+			}
+		});
+		
+		// 編輯器開關
+		$("#tool-editor").click(editorToolClickd);
+		
+	});
+	
+	/**
+	 * slideReady
+	 * 確保投影片載入完畢後僅執行一次
+	 */
+	function slideReady(e) {
+		if (isSlideReady) return;
+		isSlideReady = true;
+		currentSlide.indexh = e.indexh;
+		currentSlide.indexv = e.indexv;
+		currentSlide.indexf = 0;
+		if (socket !== null) {
+			socket.emit('speaker_chs', currentSlide);
+		}
+	}
 	
 	/**
 	 * 開始語音廣播
@@ -305,27 +366,46 @@
 		
 	}
 	
-	$(document).ready(function() {
+	/**
+	 * Start speech recognition by using HTML5 Web Speech API
+	 */
+	function startSpeechRecognition() {
+	
+		window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 		
-		// 廣播開關
-		$("input[name=cfg_radio]").change(function() {
-			if (this.value == "on") {
-				startRadio();
-				socket.emit('start_radio', "a");
-			} else {
-				if (audioStream === null) return;
-				socket.emit('stop_radio', "a");
-				audioStream.stop();
-				audioStream = null;
-				recorder = null;
+		if (window.SpeechRecognition != null) {
+		
+			recognizer = new window.SpeechRecognition();
+			recognizer.continuous = true;
+	 
+			// Start recognising
+			recognizer.onresult = function(event) {
+
+				for (var i = event.resultIndex; i < event.results.length; i++) {
+					if (event.results[i].isFinal) {
+						var result = event.results[i][0].transcript.replace(/\s+/g, "");
+						var confidence = event.results[i][0].confidence;
+						if (confidence > 0.3) {
+							if (result == "next" || result == "下一頁" || result == "下頁") {
+								Reveal.next();
+							} else if (result == "previous" || result == "上一頁" || result == "上頁") {
+								Reveal.prev();
+							}
+						}
+					}
+					console.log(event.results[i][0]);
+				}
+			};
+			
+			try {
+				recognizer.start();
+			} catch (ex) {
+				console.error(ex.message);
 			}
-		});
+			
+		}
 		
-		$("#tools span").click(function() {
-			$(this).toggleClass("active");
-		});
-		
-	});
+	}
 	
 	/**
 	 * Convert Float32 buffer to Int16 buffer
@@ -340,6 +420,49 @@
 			buf[l] = buffer[l] * 0xFFFF;    // convert to 16 bit
 		}
 		return buf.buffer;
+	}
+	
+	/**
+	 * 線上投影片編輯器工具開關
+	 */
+	function editorToolClickd() {
+		
+		$(this).toggleClass("active");
+			
+		if ($(this).hasClass("active")) {
+		
+			$("section").each(function(index, element) {
+				var html = $(this).html();
+				
+				$(this).html(html).tinymce({
+					theme: "modern",
+					schema: "html5",
+					inline: true,
+					language : 'zh_TW',
+					plugins: [
+						"advlist autolink lists link image charmap print preview anchor",
+						"searchreplace visualblocks code fullscreen",
+						"insertdatetime table contextmenu paste"
+					],
+					toolbar1: "styleselect | bold italic | alignleft aligncenter alignright alignjustify",
+					toolbar2: "bullist numlist outdent indent | link image",
+					statusbar: true,
+					fixed_toolbar_container: "#editor",
+					relative_urls : true,
+					remove_script_host : false,
+					add_unload_trigger: false,
+					menubar: true,
+					valid_elements : '*[*]'
+				});
+			});
+			
+		} else {
+			$("section.mce-content-body").each(function(index, element) {
+				$(this).tinymce().remove();
+			});
+			socket.emit('modify_slides', $("#reveal").html());
+		}
+		
 	}
 	
 	</script>

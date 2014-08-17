@@ -101,6 +101,11 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('Ask_msg', questions);
 	});
 	
+	// modify_slides事件
+	socket.on('modify_slides', function(html) {
+		socket.broadcast.emit('modify_slides', html);
+	});
+	
 	// 中斷連線事件
 	socket.on('disconnect', function () {
 		logger.info("Disconnected ID: " + socket.id);

@@ -282,6 +282,11 @@
 				setupRadio();
 			});
 			
+			// modify_slides事件
+			socket.on('modify_slides', function(html) {
+				$("#sb-site").html(html);
+			});
+			
 		});
 		
 	});
