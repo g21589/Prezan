@@ -250,6 +250,8 @@
 				currentSlide.indexv = e.indexv;
 				currentSlide.indexf = 0;
 				socket.emit('speaker_chs', currentSlide);
+				$('#pencil').removeClass('active');
+				disablePencil(currentSlide.indexh, currentSlide.indexv);
 			});
 			
 			// Mousemove事件
@@ -310,6 +312,15 @@
 		
 	}
 	
+	var togglePencil = function() {
+		if( $(this).hasClass("active") ) {				
+			enablePencil(currentSlide.indexh, currentSlide.indexv);
+		}
+		else {
+			disablePencil(currentSlide.indexh, currentSlide.indexv);
+		}
+	};
+	
 	$(document).ready(function() {
 		
 		// 廣播開關
@@ -324,21 +335,13 @@
 				audioStream = null;
 				recorder = null;
 			}
-		});
+		});		
 		
 		$("#tools span").click(function() {
 			$(this).toggleClass("active");
 		});
 		
-		$('#pencil').click(function() {
-			if( $(this).hasClass("active") ) {
-				initFreehabdDrawing(currentSlide.indexh, currentSlide.indexv);
-				enablePencil(currentSlide.indexh, currentSlide.indexv);
-			}
-			else {
-				disablePencil(currentSlide.indexh, currentSlide.indexv);
-			}
-		});
+		$('#pencil').click(togglePencil);
 		
 	});
 	

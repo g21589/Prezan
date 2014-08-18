@@ -1,8 +1,6 @@
 var g_masterPathArray;
 var g_masterDrawingBox;
-var g_masterPaper;
 var g_masterPaperArray = {};
-var g_masterBackground;
 var g_masterBackgroundArray = {};
 var $canvas;
 
@@ -26,7 +24,7 @@ function initCanvas(canvasId) {
 		'-o-transform': 'scale(' + scale + ')',
 		'transform': 'scale(' + scale + ')'
 	});	
-	$canvas.width(w).height(h).css('position', 'fixed');
+	$canvas.width(w).height(h).css({'position': 'fixed'});
 
 	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
 		$canvas.offset({top: 0, left: 0});
@@ -78,6 +76,9 @@ function initFreehabdDrawing(indexh, indexv) {
 }
 
 function enablePencil(indexh, indexv) {
+
+	initFreehabdDrawing(indexh, indexv);
+	$canvas.css('z-index', '2');
     g_masterBackgroundArray[indexh + '_' + indexv].drag(
         move = function(dx, dy) {
             if (g_masterPathArray.length == 0) {
@@ -104,5 +105,8 @@ function enablePencil(indexh, indexv) {
 }
 
 function disablePencil(indexh, indexv) {
-	g_masterBackgroundArray[indexh + '_' + indexv].undrag();
+	if( typeof(g_masterBackgroundArray[indexh + '_' + indexv]) != 'undefined' ) {
+		g_masterBackgroundArray[indexh + '_' + indexv].undrag();
+		$canvas.css('z-index', '-1');
+	}
 }
