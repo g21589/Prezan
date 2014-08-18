@@ -118,9 +118,9 @@
 	
 	<!-- Tool -->
 	<div id="tools">
-		<div><span class="glyphicon glyphicon-pencil active"></span></div>
+		<div><span id="tool-pen" class="glyphicon glyphicon-pencil"></span></div>
 		<div><span id="tool-editor" class="glyphicon glyphicon-edit"></span></div>
-		<div><span class="glyphicon glyphicon-map-marker"></span></div>
+		<div><span id="tool-vote" class="glyphicon glyphicon-check"></span></div>
 	</div>
 	
 	<!-- Editor -->
@@ -312,6 +312,18 @@
 		
 		// 編輯器開關
 		$("#tool-editor").click(editorToolClickd);
+		
+		// 畫筆開關
+		$("#tool-pen").click(function() {
+			$(this).toggleClass("active");
+			// TODO
+		});
+		
+		// 投票開關
+		$("#tool-vote").click(function() {
+			$(this).toggleClass("active");
+			// TODO
+		});
 		
 	});
 	
