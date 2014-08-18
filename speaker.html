@@ -460,7 +460,7 @@
 			$("section.mce-content-body").each(function(index, element) {
 				$(this).tinymce().remove();
 			});
-			socket.emit('modify_slides', $("#reveal").html());
+			socket.emit('modify_slides', $("#slides").html());
 		}
 		
 	}
