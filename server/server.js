@@ -106,6 +106,11 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('modify_slides', html);
 	});
 	
+	// 震動事件
+	socket.on('vibrate', function(isOpen) {
+		socket.broadcast.emit('vibrate', isOpen);
+	});
+	
 	// 中斷連線事件
 	socket.on('disconnect', function () {
 		logger.info("Disconnected ID: " + socket.id);

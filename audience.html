@@ -145,6 +145,7 @@
 	<script>
 	
 	var delayInMS = 0;
+	var vibrateTimer = null;
 	
 	/**
 	 * setupNote
@@ -285,6 +286,22 @@
 			// modify_slides事件
 			socket.on('modify_slides', function(html) {
 				$("#slides").html(html);
+			});
+			
+			// 震動事件
+			socket.on('vibrate', function(isOpen) {
+				if (isOpen) {
+					if (window.navigator && window.navigator.vibrate) {
+						vibrateTimer = setInterval(function() {
+							var a = Math.round(Math.random() * 500);
+							navigator.vibrate([a, 500-a]);
+						}, 500);	
+					}
+				} else {
+					clearInterval(vibrateTimer);
+					navigator.vibrate(0);
+					vibrateTimer = null;
+				}
 			});
 			
 		});

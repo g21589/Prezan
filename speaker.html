@@ -25,7 +25,10 @@
 
 	<!-- For syntax highlighting -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
-
+	
+	<!-- Font Awesome ICON -->
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	
 	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
 	<script>
 	if( window.location.search.match( /print-pdf/gi ) ) {
@@ -118,9 +121,10 @@
 	
 	<!-- Tool -->
 	<div id="tools">
-		<div><span id="tool-pen" class="glyphicon glyphicon-pencil"></span></div>
-		<div><span id="tool-editor" class="glyphicon glyphicon-edit"></span></div>
-		<div><span id="tool-vote" class="glyphicon glyphicon-check"></span></div>
+		<div><span id="tool-pen" class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="畫筆"></span></div>
+		<div><span id="tool-editor" class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="right" title="編輯投影片"></span></div>
+		<div><span id="tool-vote" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="投票"></span></div>
+		<div><span id="tool-bell" class="fa fa-bell" data-toggle="tooltip" data-placement="right" title="叫醒聽眾"></span></div>
 	</div>
 	
 	<!-- Editor -->
@@ -224,6 +228,7 @@
 	var bufferSize = 16384;
 	
 	var recognizer = null;
+	var bellTimer = null;
 	
 	// ready事件
 	Reveal.addEventListener('ready', slideReady);
@@ -273,8 +278,6 @@
 			$(document).click(function(event) {
 				currentMousePos.x = event.pageX / $(window).width();
 				currentMousePos.y = event.pageY / $(window).height();
-				//var element = document.elementFromPoint(event.pageX, event.pageY);
-				//aria-hidden
 				if ($("#cfgModal").attr("aria-hidden") === "true") {
 					socket.emit('click', currentMousePos);
 				}
@@ -285,6 +288,8 @@
 	});
 	
 	$(document).ready(function() {
+		
+		$("#tools span").tooltip();
 		
 		// 廣播開關
 		$("input[name=cfg_radio]").change(function() {
@@ -323,6 +328,16 @@
 		$("#tool-vote").click(function() {
 			$(this).toggleClass("active");
 			// TODO
+		});
+
+		// 聽眾震動開關 (提神用)
+		$("#tool-bell").click(function() {
+			$(this).toggleClass("active");
+			if ($(this).hasClass("active")) {
+				socket.emit('vibrate', true);
+			} else {
+				socket.emit('vibrate', false);
+			}
 		});
 		
 	});
