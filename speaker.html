@@ -313,8 +313,19 @@
 	}
 	
 	var togglePencil = function() {
+		var $canvas;
 		if( $(this).hasClass("active") ) {				
-			enablePencil(currentSlide.indexh, currentSlide.indexv);
+			$canvas = enablePencil(currentSlide.indexh, currentSlide.indexv);
+			if($canvas != null) {
+				console.log("initialize canvas");
+				console.log($canvas);
+				socket.emit('init_canvas', "canvas");
+				/*
+				currentSlide.indexh += 1;
+				socket.emit('speaker_chs', currentSlide);
+				currentSlide.indexh -= 1;
+				*/
+			}
 		}
 		else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);

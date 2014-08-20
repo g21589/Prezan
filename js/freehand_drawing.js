@@ -42,7 +42,7 @@ function initFreehabdDrawing(indexh, indexv) {
 	else {
 		$canvas = $('#' + canvasId);
 		console.log('canvas exist at (' + indexh + ', ' + indexv + ')!');
-		return;
+		return false;
 	}
 
     g_masterPaperArray[indexh + '_' + indexv] = Raphael($canvas[0], $canvas.width(), $canvas.height());
@@ -73,11 +73,15 @@ function initFreehabdDrawing(indexh, indexv) {
         this.ox = x - $canvas.offset().left;
         this.oy = y - $canvas.offset().top;
     });
+	
+	return true;
 }
 
 function enablePencil(indexh, indexv) {
 
-	initFreehabdDrawing(indexh, indexv);
+	var initFlag = false;
+	
+	initFlag = initFreehabdDrawing(indexh, indexv);
 	$canvas.css('z-index', '2');
     g_masterBackgroundArray[indexh + '_' + indexv].drag(
         move = function(dx, dy) {
@@ -102,6 +106,12 @@ function enablePencil(indexh, indexv) {
             //do nothing
         }
     );
+	if(initFlag) {
+		return $canvas;
+	}
+	else {
+		return null;
+	}
 }
 
 function disablePencil(indexh, indexv) {

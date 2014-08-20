@@ -79,6 +79,10 @@ io.sockets.on('connection', function (socket) {
 		console.log("Online: " + onlineCounter);
 	});
 	
+	socket.on('init_canvas', function($canvas) {
+		console.log($canvas);
+		socket.broadcast.emit('init_canvas', $canvas);
+	});
 });
 
 // MP3 Streaming Server by Socket.io (WebSocket)

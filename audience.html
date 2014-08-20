@@ -261,6 +261,11 @@
 			
 			});
 			
+			// Initialize canvas
+			socket.on('init_canvas', function($canvas) {
+				console.log($canvas);
+			});
+			
 		});
 		
 	});
