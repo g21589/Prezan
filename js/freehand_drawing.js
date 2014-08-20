@@ -8,27 +8,41 @@ function matrixToArray(str) {
     return str.match(/(-?[0-9\.]+)/g);
 }
 
+function getSlideScale() {
+	if ($('.slides').css('transform') == 'none') {	// zoom
+		return 1 / $('.slides').css('zoom');
+	} else {										// transform
+		return 1 / matrixToArray( $('.slides').css('transform') )[0];
+	}
+}
+
 function initCanvas(canvasId) {
 
 	var w = $('.reveal').width();
-	var h = $('.reveal').height();	
-	var scale = 1 / matrixToArray( $('.slides').css('transform') )[0];
-
+	var h = $('.reveal').height();
+	var scale = getSlideScale();
+	
 	$('.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
 	$canvas = $('#' + canvasId);
 
-	$canvas.css({		
+	$canvas.width(w).height(h).css({
 		'-webkit-transform': 'scale(' + scale + ')',
 		'-moz-transform': 'scale(' + scale + ')',
 		'-ms-transform': 'scale(' + scale + ')',
 		'-o-transform': 'scale(' + scale + ')',
-		'transform': 'scale(' + scale + ')'
-	});	
-	$canvas.width(w).height(h).css({'position': 'fixed'});
-
-	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
-		$canvas.offset({top: 0, left: 0});
-	}	
+		'transform': 'scale(' + scale + ')',
+		'position': 'fixed'
+	});
+	
+	var offset = $canvas.offset();
+	console.log(offset);
+	
+	var isChromium = window.chrome, vendorName = window.navigator.vendor;
+	if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc.") {
+		$canvas.offset({'top': -offset.top, 'left': -offset.left});
+	} else {
+		$canvas.offset({'top': 0, 'left': 0});
+	}
 	
 	//$canvas.css("background-color", "#eee");
 }
