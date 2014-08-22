@@ -264,6 +264,7 @@
 			// Initialize canvas
 			socket.on('init_canvas', function($canvas) {
 				console.log($canvas);
+				$('.present').not('.stack').prepend($canvas);
 			});
 			
 		});

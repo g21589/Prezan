@@ -79,8 +79,8 @@ io.sockets.on('connection', function (socket) {
 		console.log("Online: " + onlineCounter);
 	});
 	
+	// 初始化Canvas
 	socket.on('init_canvas', function($canvas) {
-		console.log($canvas);
 		socket.broadcast.emit('init_canvas', $canvas);
 	});
 });
