@@ -500,6 +500,7 @@
 	 * 畫筆開關
 	 */
 	function togglePencil() {
+		$(this).toggleClass("active");
 		var $canvas;
 		if( $(this).hasClass("active") ) {				
 			$canvas = enablePencil(currentSlide.indexh, currentSlide.indexv);

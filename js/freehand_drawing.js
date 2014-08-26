@@ -59,8 +59,6 @@ function initCanvas(canvasId) {
 		}
 	}
 	
-	$canvas.css("background-color", "#eee");
-	$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
