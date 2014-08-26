@@ -304,6 +304,26 @@
 				}
 			});
 			
+			// Initialize canvas
+			var canvasId;			
+			socket.on('init_canvas', function(canvas) {
+				var $canvas;
+				canvasId = canvas.match(/id="(.+?)"/)[1];
+				if( $('#' + canvasId).length == 0 ) {
+					$('section.present').not('.stack').prepend(canvas);
+					$canvas = $('#' + canvasId);
+					$canvas.children('svg').html('');
+					$canvas.css('z-index', '-1');
+				}				
+			});
+			
+			//Add path
+			socket.on('add_path', function(fhpath) {
+				var $canvas = $('#' + canvasId);
+				$canvas.children('svg').append(fhpath);
+				$canvas.html($canvas.html());
+			});
+			
 		});
 		
 	});

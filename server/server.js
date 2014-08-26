@@ -118,6 +118,15 @@ io.sockets.on('connection', function (socket) {
 		logger.info("Online: " + onlineCounter);
 	});
 	
+	// 初始化Canvas
+	socket.on('init_canvas', function(canvas) {
+		socket.broadcast.emit('init_canvas', canvas);
+	});
+	
+	// 同步註記
+	socket.on('add_path', function(fhpath) {
+		socket.broadcast.emit('add_path', fhpath);
+	});
 });
 
 // 丟棄過時的聲音串流資料
