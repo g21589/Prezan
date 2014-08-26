@@ -9,7 +9,7 @@ HTML5 即時簡報聽眾系統
 Version
 ----
 
-0.3.5
+0.5.0
 
 Install on Ubuntu 14.04 Server
 ----
@@ -17,7 +17,7 @@ Install on Ubuntu 14.04 Server
 ```sh
 sudo apt-get install lamp-server^
 
-sudo apt-get install gcc g++ libasound-dev
+sudo apt-get install gcc g++ make libasound-dev
 
 sudo apt-get install python-software-properties
 sudo apt-add-repository ppa:chris-lea/node.js
