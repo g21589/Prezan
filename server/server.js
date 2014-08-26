@@ -80,8 +80,8 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	// 初始化Canvas
-	socket.on('init_canvas', function($canvas) {
-		socket.broadcast.emit('init_canvas', $canvas);
+	socket.on('init_canvas', function(canvas) {
+		socket.broadcast.emit('init_canvas', canvas);
 	});
 	
 	// 同步註記

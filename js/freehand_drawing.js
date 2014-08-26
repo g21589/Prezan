@@ -23,7 +23,7 @@ function initCanvas(canvasId) {
 	var h = $('.reveal').height();
 	var scale = getSlideScale();
 	
-	$('.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
+	$('section.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
 	$canvas = $('#' + canvasId);
 
 	$canvas.width(w).height(h).css({
@@ -40,12 +40,17 @@ function initCanvas(canvasId) {
 	
 	var isChromium = window.chrome, vendorName = window.navigator.vendor;
 	if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc.") {
+		//google chrome
 		$canvas.offset({'top': -offset.top, 'left': -offset.left});
 	} else {
-		$canvas.offset({'top': 0, 'left': 0});
+		//other(firefox)
+		while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
+			$canvas.offset({top: 0, left: 0});
+		}
 	}
 	
 	//$canvas.css("background-color", "#eee");
+	//$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
