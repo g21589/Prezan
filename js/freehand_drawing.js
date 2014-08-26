@@ -9,6 +9,12 @@ function matrixToArray(str) {
     return str.match(/(-?[0-9\.]+)/g);
 }
 
+function getCoordScale() {
+	var slidesScale = matrixToArray( $('.slides').css('transform') )[0];
+	var canvasScale = matrixToArray( $canvas.css('transform') )[0];
+	return  slidesScale * canvasScale;
+}
+
 function getSlideScale() {
 	if ($('.slides').css('transform') == 'none') {	// zoom
 		return 1 / $('.slides').css('zoom');
@@ -49,8 +55,8 @@ function initCanvas(canvasId) {
 		}
 	}
 	
-	//$canvas.css("background-color", "#eee");
-	//$canvas.css("opacity", 0.5);
+	$canvas.css("background-color", "#eee");
+	$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
@@ -90,8 +96,9 @@ function initFreehabdDrawing(indexh, indexv) {
             y = evt.pageY;
         }
         // subtract paper coords on page
-        this.ox = x - $canvas.offset().left;
-        this.oy = y - $canvas.offset().top;
+        this.ox = (x - $canvas.offset().left) / getCoordScale();
+        this.oy = (y - $canvas.offset().top) / getCoordScale();
+		$('#test').text('(' + x + ',' + y + ')  //  (' + this.ox + ',' + this.oy + ')');
     });
 	
 	return true;
