@@ -9,18 +9,22 @@ function matrixToArray(str) {
     return str.match(/(-?[0-9\.]+)/g);
 }
 
+function getScale($element) {
+	if ($element.css('transform') == 'none') {	// zoom
+		return $element.css('zoom');
+	} else {										// transform
+		return matrixToArray( $element.css('transform') )[0];
+	}
+}
+
 function getCoordScale() {
-	var slidesScale = matrixToArray( $('.slides').css('transform') )[0];
-	var canvasScale = matrixToArray( $canvas.css('transform') )[0];
+	var slidesScale = getScale( $('.slides') );
+	var canvasScale = getScale( $canvas );
 	return  slidesScale * canvasScale;
 }
 
 function getSlideScale() {
-	if ($('.slides').css('transform') == 'none') {	// zoom
-		return 1 / $('.slides').css('zoom');
-	} else {										// transform
-		return 1 / matrixToArray( $('.slides').css('transform') )[0];
-	}
+	return 1 / getScale( $('.slides') );
 }
 
 function initCanvas(canvasId) {
