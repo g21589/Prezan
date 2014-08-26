@@ -262,9 +262,19 @@
 			});
 			
 			// Initialize canvas
+			var canvasId;			
 			socket.on('init_canvas', function($canvas) {
-				console.log($canvas);
-				$('.present').not('.stack').prepend($canvas);
+				canvasId = $canvas.match(/id="(.+?)"/)[1];
+				if( $('#' + canvasId).length == 0 ) {
+					$('.present').not('.stack').prepend($canvas);
+				}				
+			});
+			
+			//Add path
+			socket.on('add_path', function(fhpath) {
+				var $canvas = $('#' + canvasId);
+				$canvas.children('svg').append(fhpath);
+				$canvas.html($canvas.html());
 			});
 			
 		});

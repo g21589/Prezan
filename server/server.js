@@ -83,6 +83,11 @@ io.sockets.on('connection', function (socket) {
 	socket.on('init_canvas', function($canvas) {
 		socket.broadcast.emit('init_canvas', $canvas);
 	});
+	
+	// 同步註記
+	socket.on('add_path', function(fhpath) {
+		socket.broadcast.emit('add_path', fhpath);
+	});
 });
 
 // MP3 Streaming Server by Socket.io (WebSocket)

@@ -2,6 +2,7 @@ var g_masterPathArray;
 var g_masterDrawingBox;
 var g_masterPaperArray = {};
 var g_masterBackgroundArray = {};
+var pathId = 0;
 var $canvas;
 
 function matrixToArray(str) {
@@ -117,7 +118,9 @@ function enablePencil(indexh, indexv) {
             g_masterPathArray = new Array();
         },
         up = function() {
-            //do nothing
+			g_masterDrawingBox.node.setAttribute("class", "fhpath");
+			g_masterDrawingBox.node.id = "p" + (pathId++);
+			socket.emit('add_path', g_masterDrawingBox.node.outerHTML);
         }
     );
 	if(initFlag) {

@@ -318,13 +318,8 @@
 			$canvas = enablePencil(currentSlide.indexh, currentSlide.indexv);
 			if($canvas != null) {
 				console.log("initialize canvas");
-				console.log($canvas);
-				socket.emit('init_canvas', $("<div>").append($canvas.clone()).html());
-				/*
-				currentSlide.indexh += 1;
-				socket.emit('speaker_chs', currentSlide);
-				currentSlide.indexh -= 1;
-				*/
+				//socket.emit('init_canvas', $("<div>").append($canvas.clone()).html());
+				socket.emit('init_canvas', $canvas[0].outerHTML);
 			}
 		}
 		else {
