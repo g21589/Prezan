@@ -9,18 +9,23 @@ function matrixToArray(str) {
     return str.match(/(-?[0-9\.]+)/g);
 }
 
+function isChrome() {
+	var isChromium = window.chrome, vendorName = window.navigator.vendor;
+	if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc.") {
+		//google chrome
+		return true;
+	} else {
+		//other(firefox)
+		return false;
+	}
+}
+
 function getScale($element) {
 	if ($element.css('transform') == 'none') {	// zoom
 		return $element.css('zoom');
 	} else {										// transform
 		return matrixToArray( $element.css('transform') )[0];
 	}
-}
-
-function getCoordScale() {
-	var slidesScale = getScale( $('.slides') );
-	var canvasScale = getScale( $canvas );
-	return  slidesScale * canvasScale;
 }
 
 function getSlideScale() {
@@ -36,29 +41,14 @@ function initCanvas(canvasId) {
 	$('section.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
 	$canvas = $('#' + canvasId);
 
-	$canvas.width(w).height(h).css({
-		'-webkit-transform': 'scale(' + scale + ')',
-		'-moz-transform': 'scale(' + scale + ')',
-		'-ms-transform': 'scale(' + scale + ')',
-		'-o-transform': 'scale(' + scale + ')',
-		'transform': 'scale(' + scale + ')',
-		'position': 'fixed'
-	});
+	$canvas.width(w * scale).height(h * scale).css('position', 'fixed');
 	
-	var offset = $canvas.offset();
-	console.log(offset);
-	
-	var isChromium = window.chrome, vendorName = window.navigator.vendor;
-	if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc.") {
-		//google chrome
-		$canvas.offset({'top': -offset.top, 'left': -offset.left});
-	} else {
-		//other(firefox)
-		while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
-			$canvas.offset({top: 0, left: 0});
-		}
+	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
+		$canvas.offset({top: 0, left: 0});
 	}
-	
+
+	//$canvas.css("background-color", "#eee");
+	//$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
@@ -98,9 +88,16 @@ function initFreehabdDrawing(indexh, indexv) {
             y = evt.pageY;
         }
         // subtract paper coords on page
-        this.ox = (x - $canvas.offset().left) / getCoordScale();
-        this.oy = (y - $canvas.offset().top) / getCoordScale();
-		$('#test').text('(' + x + ',' + y + ')  //  (' + this.ox + ',' + this.oy + ')');
+		if(isChrome()) {
+			this.ox = x * getSlideScale() - $canvas.offset().left;
+			this.oy = y * getSlideScale() - $canvas.offset().top;
+		}
+		else {
+			this.ox = (x - $canvas.offset().left) * getSlideScale();
+			this.oy = (y - $canvas.offset().top) * getSlideScale();
+		}
+		
+		//$('#test').text('(' + x + ',' + y + ')  //  (' + this.ox + ',' + this.oy + ')');
     });
 	
 	return true;
