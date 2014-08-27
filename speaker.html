@@ -461,7 +461,12 @@
 		$(this).toggleClass("active");
 			
 		if ($(this).hasClass("active")) {
-		
+			
+			if( $("#tool-pen").hasClass("active") ) {
+				$("#tool-pen").toggleClass("active");
+				disablePencil(currentSlide.indexh, currentSlide.indexv);
+			}
+			
 			$("section").each(function(index, element) {
 				var html = $(this).html();
 				
@@ -488,12 +493,19 @@
 			});
 			
 		} else {
-			$("section.mce-content-body").each(function(index, element) {
-				$(this).tinymce().remove();
-			});
-			socket.emit('modify_slides', $("#slides").html());
+			disableEditor();
 		}
 		
+	}
+	
+	/**
+	 * 關閉編輯器
+	 */
+	function disableEditor() {
+		$("section.mce-content-body").each(function(index, element) {
+			$(this).tinymce().remove();
+		});
+		socket.emit('modify_slides', $("#slides").html());
 	}
 	
 	/**
@@ -502,15 +514,18 @@
 	function togglePencil() {
 		$(this).toggleClass("active");
 		var $canvas;
-		if( $(this).hasClass("active") ) {				
+		if( $(this).hasClass("active") ) {
+			if( $("#tool-editor").hasClass("active") ) {
+				$("#tool-editor").toggleClass("active");
+				disableEditor();
+			}
 			$canvas = enablePencil(currentSlide.indexh, currentSlide.indexv);
 			if($canvas != null) {
 				console.log("initialize canvas");
 				//socket.emit('init_canvas', $("<div>").append($canvas.clone()).html());
 				socket.emit('init_canvas', $canvas[0].outerHTML);
 			}
-		}
-		else {
+		} else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);
 		}
 	};
