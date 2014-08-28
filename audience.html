@@ -312,7 +312,6 @@
 				if( $('#' + canvasId).length == 0 ) {
 					$('section.present').not('.stack').prepend(canvas);
 					$canvas = $('#' + canvasId);
-					$canvas.children('svg').html('');
 					$canvas.css('z-index', '-1');
 				}				
 			});

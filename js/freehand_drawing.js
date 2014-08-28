@@ -47,8 +47,8 @@ function initCanvas(canvasId) {
 		$canvas.offset({top: 0, left: 0});
 	}
 
-	//$canvas.css("background-color", "#eee");
-	//$canvas.css("opacity", 0.5);
+	$canvas.css("background-color", "#eee");
+	$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
@@ -99,15 +99,13 @@ function initFreehabdDrawing(indexh, indexv) {
 		
 		//$('#test').text('(' + x + ',' + y + ')  //  (' + this.ox + ',' + this.oy + ')');
     });
-	
+	socket.emit('init_canvas', $canvas[0].outerHTML);
 	return true;
 }
 
 function enablePencil(indexh, indexv) {
 
-	var initFlag = false;
-	
-	initFlag = initFreehabdDrawing(indexh, indexv);
+	initFreehabdDrawing(indexh, indexv);
 	$canvas.css('z-index', '2');
     g_masterBackgroundArray[indexh + '_' + indexv].drag(
         move = function(dx, dy) {
@@ -134,12 +132,6 @@ function enablePencil(indexh, indexv) {
 			socket.emit('add_path', g_masterDrawingBox.node.outerHTML);
         }
     );
-	if(initFlag) {
-		return $canvas;
-	}
-	else {
-		return null;
-	}
 }
 
 function disablePencil(indexh, indexv) {
@@ -147,4 +139,8 @@ function disablePencil(indexh, indexv) {
 		g_masterBackgroundArray[indexh + '_' + indexv].undrag();
 		$canvas.css('z-index', '-1');
 	}
+}
+
+function syncCurrentCanvas() {
+	socket.emit('init_canvas', $canvas[0].outerHTML);
 }

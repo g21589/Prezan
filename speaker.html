@@ -251,6 +251,11 @@
 				console.log(msg);
 			});
 			
+			// sync canvas
+			socket.on('sync_canvas', function(e) {
+				syncCurrentCanvas();
+			});
+			
 			// online_counter事件
 			socket.on('online_counter', function(onlineCounter) {
 				$('#online span').text(onlineCounter);
@@ -513,18 +518,13 @@
 	 */
 	function togglePencil() {
 		$(this).toggleClass("active");
-		var $canvas;
 		if( $(this).hasClass("active") ) {
 			if( $("#tool-editor").hasClass("active") ) {
 				$("#tool-editor").toggleClass("active");
 				disableEditor();
 			}
-			$canvas = enablePencil(currentSlide.indexh, currentSlide.indexv);
-			if($canvas != null) {
-				console.log("initialize canvas");
-				//socket.emit('init_canvas', $("<div>").append($canvas.clone()).html());
-				socket.emit('init_canvas', $canvas[0].outerHTML);
-			}
+			enablePencil(currentSlide.indexh, currentSlide.indexv);
+
 		} else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);
 		}

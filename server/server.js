@@ -4,6 +4,7 @@ var path = require('path');
 var winston = require('winston');
 var http = require('http');
 var io = require('socket.io').listen(8080);
+var speakerId = null;
 
 // Logger config using winston
 var logger = new (winston.Logger)({
@@ -34,6 +35,7 @@ var currentSlide = {
 };
 var onlineCounter = 0;
 var isRadioPlay = false;
+var canvas;
 
 logger.info('===== Start Server =====');
 
@@ -47,10 +49,16 @@ io.sockets.on('connection', function (socket) {
 	// 訊息事件
 	socket.on('message', function (msg) {
 		logger.info("Message: " + msg);
-		if (msg == 'audience_connect') {
+		if(msg == 'speaker_connect') {
+			speakerId = socket.id
+		}		
+		else if (msg == 'audience_connect') {
 			socket.emit('audience_chs', currentSlide);
 			if (isRadioPlay) {
 				socket.emit('start_radio', "");
+			}
+			if(speakerId != null) {
+				io.to(speakerId).emit('sync_canvas', null);
 			}
 		}
 	});
