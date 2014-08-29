@@ -275,8 +275,10 @@
 				currentSlide.indexv = e.indexv;
 				currentSlide.indexf = 0;
 				socket.emit('speaker_chs', currentSlide);
-				$('#pencil').removeClass('active');
-				disablePencil(currentSlide.indexh, currentSlide.indexv);
+				if( $("#tool-pen").hasClass("active") ) {
+					$("#tool-pen").toggleClass("active");
+					disablePencil(currentSlide.indexh, currentSlide.indexv);
+				}
 			});
 			
 			// Mousemove事件
