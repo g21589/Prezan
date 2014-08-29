@@ -3,6 +3,7 @@ var g_masterDrawingBox;
 var g_masterPaperArray = {};
 var g_masterBackgroundArray = {};
 var pathId = 0;
+var eraserFlag = false;
 var $canvas;
 
 function matrixToArray(str) {
@@ -46,9 +47,6 @@ function initCanvas(canvasId) {
 	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
 		$canvas.offset({top: 0, left: 0});
 	}
-
-	$canvas.css("background-color", "#eee");
-	$canvas.css("opacity", 0.5);
 }
 
 function initFreehabdDrawing(indexh, indexv) {
@@ -114,7 +112,7 @@ function enablePencil(indexh, indexv) {
                 g_masterDrawingBox = g_masterPaperArray[indexh + '_' + indexv].path(g_masterPathArray);
                 g_masterDrawingBox.attr({
                     stroke: "#FF0000",
-                    "stroke-width": 3
+                    "stroke-width": 5
                 });
             } else {
                 g_masterPathArray[g_masterPathArray.length] = ["L", this.ox, this.oy];
@@ -130,6 +128,12 @@ function enablePencil(indexh, indexv) {
 			g_masterDrawingBox.node.setAttribute("class", "fhpath");
 			g_masterDrawingBox.node.id = "p" + (pathId++);
 			socket.emit('add_path', g_masterDrawingBox.node.outerHTML);
+			g_masterDrawingBox.click( function() {
+				if( eraserFlag ) {
+					socket.emit('remove_path', this.node.id);
+					this.remove();
+				}				
+			});
         }
     );
 }
@@ -139,6 +143,18 @@ function disablePencil(indexh, indexv) {
 		g_masterBackgroundArray[indexh + '_' + indexv].undrag();
 		$canvas.css('z-index', '-1');
 	}
+}
+
+function enableEraser() {
+	$('body').css('cursor', 'url(images/eraser.png) 10 32, auto');
+	$canvas.css('z-index', '2');
+	eraserFlag = true;
+}
+
+function disableEraser() {
+	$('body').css('cursor', '');
+	$canvas.css('z-index', '-1');
+	eraserFlag = false;
 }
 
 function syncCurrentCanvas() {

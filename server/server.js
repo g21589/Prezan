@@ -131,9 +131,14 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('init_canvas', canvas);
 	});
 	
-	// 同步註記
+	// 新增註記
 	socket.on('add_path', function(fhpath) {
 		socket.broadcast.emit('add_path', fhpath);
+	});
+	
+	// 刪除註記
+	socket.on('remove_path', function(fhpathId) {
+		socket.broadcast.emit('remove_path', fhpathId);
 	});
 });
 

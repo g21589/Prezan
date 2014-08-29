@@ -123,6 +123,7 @@
 	<!-- Tool -->
 	<div id="tools">
 		<div><span id="tool-pen" class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="畫筆"></span></div>
+		<div><span id="tool-eraser" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="橡皮擦"></span></div>
 		<div><span id="tool-editor" class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="right" title="編輯投影片"></span></div>
 		<div><span id="tool-vote" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="投票"></span></div>
 		<div><span id="tool-bell" class="fa fa-bell" data-toggle="tooltip" data-placement="right" title="叫醒聽眾"></span></div>
@@ -335,6 +336,9 @@
 		// 畫筆開關
 		$("#tool-pen").click(togglePencil);
 		
+		// 橡皮擦開關
+		$("#tool-eraser").click(toggleEraser);
+		
 		// 投票開關
 		$("#tool-vote").click(function() {
 			$(this).toggleClass("active");
@@ -473,6 +477,10 @@
 				$("#tool-pen").toggleClass("active");
 				disablePencil(currentSlide.indexh, currentSlide.indexv);
 			}
+			if( $("#tool-eraser").hasClass("active") ) {
+				$("#tool-eraser").toggleClass("active");
+				disableEraser();
+			}
 			
 			$("section").each(function(index, element) {
 				var html = $(this).html();
@@ -521,16 +529,41 @@
 	function togglePencil() {
 		$(this).toggleClass("active");
 		if( $(this).hasClass("active") ) {
+			if( $("#tool-eraser").hasClass("active") ) {
+				$("#tool-eraser").toggleClass("active");
+				disableEraser();
+			}
 			if( $("#tool-editor").hasClass("active") ) {
 				$("#tool-editor").toggleClass("active");
 				disableEditor();
-			}
+			}			
 			enablePencil(currentSlide.indexh, currentSlide.indexv);
 
 		} else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);
 		}
-	};
+	}
+	
+	/**
+	 * 橡皮擦開關
+	 */
+	function toggleEraser() {
+		$(this).toggleClass("active");
+		if( $(this).hasClass("active") ) {
+			if( $("#tool-pen").hasClass("active") ) {
+				$("#tool-pen").toggleClass("active");
+				disablePencil(currentSlide.indexh, currentSlide.indexv);
+			}
+			if( $("#tool-editor").hasClass("active") ) {
+				$("#tool-editor").toggleClass("active");
+				disableEditor();
+			}			
+			enableEraser();
+
+		} else {			
+			disableEraser();
+		}
+	}
 	
 	</script>
 	
