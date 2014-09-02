@@ -146,13 +146,11 @@ function disablePencil(indexh, indexv) {
 }
 
 function enableEraser() {
-	$('body').css('cursor', 'url(images/eraser.png) 10 32, auto');
 	$canvas.css('z-index', '2');
 	eraserFlag = true;
 }
 
 function disableEraser() {
-	$('body').css('cursor', '');
 	$canvas.css('z-index', '-1');
 	eraserFlag = false;
 }
