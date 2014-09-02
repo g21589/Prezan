@@ -123,9 +123,8 @@
 	<!-- Tool -->
 	<div id="tools">
 		<div><span id="tool-pen" class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="畫筆"></span></div>
-		<div><span id="tool-eraser" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="橡皮擦"></span></div>
+		<div><span id="tool-eraser" class="fa fa-eraser" data-toggle="tooltip" data-placement="right" title="橡皮擦"></span></div>
 		<div><span id="tool-editor" class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="right" title="編輯投影片"></span></div>
-		<div><span id="tool-vote" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="投票"></span></div>
 		<div><span id="tool-bell" class="fa fa-bell" data-toggle="tooltip" data-placement="right" title="叫醒聽眾"></span></div>
 	</div>
 	
@@ -338,12 +337,6 @@
 		
 		// 橡皮擦開關
 		$("#tool-eraser").click(toggleEraser);
-		
-		// 投票開關
-		$("#tool-vote").click(function() {
-			$(this).toggleClass("active");
-			// TODO
-		});
 
 		// 聽眾震動開關 (提神用)
 		$("#tool-bell").click(function() {
@@ -493,9 +486,9 @@
 					plugins: [
 						"advlist autolink lists link image charmap print preview anchor",
 						"searchreplace visualblocks code fullscreen",
-						"insertdatetime table contextmenu paste"
+						"insertdatetime table contextmenu paste textcolor colorpicker"
 					],
-					toolbar1: "styleselect | bold italic | alignleft aligncenter alignright alignjustify",
+					toolbar1: "styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify",
 					toolbar2: "bullist numlist outdent indent | link image",
 					statusbar: true,
 					fixed_toolbar_container: "#editor",
