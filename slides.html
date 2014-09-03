@@ -136,10 +136,12 @@ Reveal.initialize({
 	<section>
 		<h1 class='cht'>Prezan</h1>
 		<h3 class='cht'>HTML5 即時簡報聽眾系統</h3><br>
-		<p class='cht'>指導教授: 高宏宇</p>
-		<p class='cht'>專案主持人: 黃宇新</p>
-		<p class='cht'>開發團隊: 1KM (陳冠斌、陳昱琦、陳吉德)</p>
 		
+		<div style="font-size: 28px;">
+			<p class='cht'>指導教授: 高宏宇</p>
+			<p class='cht'>專案主持人: 黃宇新</p>
+			<p class='cht'>開發團隊: 1KM (陳冠斌、陳昱琦、陳吉德)</p>
+		</div>
 		<aside class="notes">
 			演講備忘錄測試
 		</aside>
@@ -169,6 +171,7 @@ Reveal.initialize({
 			<h2 class='cht'>Motivation</h2>
 			<div class="row">
 				<div class="col-xs-6" style="font-size: 26px;">
+					<br><br>
 					<ul>
 						<li>離投影幕太遠看不清楚投影片</li>
 						<li>無法即時在投影片上做筆記</li>
@@ -183,7 +186,7 @@ Reveal.initialize({
 	
 	</section>
 	
-	<section>
+	<section data-transition="zoom">
 	
 		<section>
 			<h2 class='cht'>Outline</h2>
@@ -198,11 +201,12 @@ Reveal.initialize({
 			<h2 class='cht'>Introduction</h2>
 			<div class="row">
 				<div class="col-xs-7"><img src="./images/arch.svg" style="margin-top: 50px; background: rgba(0, 0, 0, 0); border: none; box-shadow: none;"></div>
-				<div class="col-xs-5" style="font-size: 24px;">
+				<div class="col-xs-5" style="font-size: 26px;">
+					<br><br>
 					<ul>
 						<li>利用<strong>HTML5</strong>技術實做即時簡報系統</li>
 						<li>使用<strong>reveal.js</strong>套件展示投影片</li>
-						<li>透過<strong>Apache、WebSocket、Node.js</strong>達到演講者與聽眾投影片同步功能</li>
+						<li>透過<strong>WebSocket、Node.js</strong>達到演講者與聽眾投影片同步功能</li>
 					</ul>
 				</div>
 			</div>
@@ -210,7 +214,7 @@ Reveal.initialize({
 	
 	</section>
 	
-	<section>
+	<section data-transition="linear">
 	
 		<section>
 			<h2 class='cht'>Outline</h2>
@@ -221,7 +225,7 @@ Reveal.initialize({
 			</ul>
 		</section>
 		
-		<section>
+		<section data-transition="zoom">
 			<h2 class='cht'>DEMO</h2>
 			<div class="row">
 				<div class="col-xs-6">
@@ -254,6 +258,18 @@ Reveal.initialize({
 			</div>
 		</section>
 	
+	</section>
+	
+	<section>
+		<p class="fragment grow">grow</p>
+		<p class="fragment shrink">shrink</p>
+		<p class="fragment roll-in">roll-in</p>
+		<p class="fragment fade-out">fade-out</p>
+		<p class="fragment current-visible">visible only once</p>
+		<p class="fragment highlight-current-blue">blue only once</p>
+		<p class="fragment highlight-red">highlight-red</p>
+		<p class="fragment highlight-green">highlight-green</p>
+		<p class="fragment highlight-blue">highlight-blue</p>
 	</section>
 	
 	<!-- 使用markdown格式 -->
