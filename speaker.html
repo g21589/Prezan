@@ -226,7 +226,7 @@
 	
 	var socket = null;
 	var currentMousePos = { x: -1, y: -1 };
-	var currentSlide = { indexh: 0, indexv: 0, indexf: 0};
+	var currentSlide = { indexh: 0, indexv: 0, indexf: -1};
 	var isSlideReady = false;
 	
 	audioContext = window.AudioContext || window.webkitAudioContext;
@@ -276,7 +276,31 @@
 			Reveal.addEventListener('slidechanged', function(e) {
 				currentSlide.indexh = e.indexh;
 				currentSlide.indexv = e.indexv;
-				currentSlide.indexf = 0;
+				currentSlide.indexf = -1;
+				socket.emit('speaker_chs', currentSlide);
+				if( $("#tool-pen").hasClass("active") ) {
+					$("#tool-pen").toggleClass("active");
+					disablePencil(currentSlide.indexh, currentSlide.indexv);
+				}
+			});
+			
+			// fragmentchanged事件
+			Reveal.addEventListener('fragmentshown', function(e) {
+				var index = Reveal.getIndices();
+				currentSlide.indexh = index.h;
+				currentSlide.indexv = index.v;
+				currentSlide.indexf = index.f;
+				socket.emit('speaker_chs', currentSlide);
+				if( $("#tool-pen").hasClass("active") ) {
+					$("#tool-pen").toggleClass("active");
+					disablePencil(currentSlide.indexh, currentSlide.indexv);
+				}
+			});
+			Reveal.addEventListener('fragmenthidden', function(e) {
+				var index = Reveal.getIndices();
+				currentSlide.indexh = index.h;
+				currentSlide.indexv = index.v;
+				currentSlide.indexf = index.f;
 				socket.emit('speaker_chs', currentSlide);
 				if( $("#tool-pen").hasClass("active") ) {
 					$("#tool-pen").toggleClass("active");

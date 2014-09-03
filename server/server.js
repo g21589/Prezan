@@ -31,7 +31,7 @@ var encoder = new lame.Encoder({
 var currentSlide = {
 	indexh: 0,
 	indexv: 0,
-	indexf: 0
+	indexf: -1
 };
 var onlineCounter = 0;
 var isRadioPlay = false;
