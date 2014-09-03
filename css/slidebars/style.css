@@ -17,11 +17,11 @@
 .sb-slidebar {
 	top: 50px;
 	height: calc(100% - 50px);
+	min-width: 220px;
 	background-color: rgba(0, 0, 0, 0.2);
 }
 
 .sb-toggle-right {
-	width: 58px;
 	padding: 14px;
 	position: absolute;
 	right: 0px;

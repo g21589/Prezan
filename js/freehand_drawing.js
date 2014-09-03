@@ -44,7 +44,9 @@ function initCanvas(canvasId) {
 
 	$canvas.width(w * scale).height(h * scale).css('position', 'fixed');
 	
-	while($canvas.offset().top !=0 || $canvas.offset().left !=0) {
+	console.log($canvas.offset());
+	
+	for (var i = 0; (Math.abs($canvas.offset().top) > 1 || Math.abs($canvas.offset().left) > 1) && i < 10; i++) {
 		$canvas.offset({top: 0, left: 0});
 	}
 }

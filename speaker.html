@@ -66,6 +66,7 @@
 		font-size: 28px;
 		transition: all 0.3s ease-out;
 		cursor: pointer;
+		z-index: 2;
 	}
 	#config:hover {
 		color: #F00;
@@ -101,6 +102,7 @@
 		position: absolute;
 		top: 10px;
 		left: 10px;
+		z-index: 2;
 	}
 	</style>
 	
@@ -123,9 +125,8 @@
 	<!-- Tool -->
 	<div id="tools">
 		<div><span id="tool-pen" class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="畫筆"></span></div>
-		<div><span id="tool-eraser" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="橡皮擦"></span></div>
+		<div><span id="tool-eraser" class="fa fa-eraser" data-toggle="tooltip" data-placement="right" title="橡皮擦"></span></div>
 		<div><span id="tool-editor" class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="right" title="編輯投影片"></span></div>
-		<div><span id="tool-vote" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="投票"></span></div>
 		<div><span id="tool-bell" class="fa fa-bell" data-toggle="tooltip" data-placement="right" title="叫醒聽眾"></span></div>
 	</div>
 	
@@ -144,7 +145,7 @@
 		  
            <form class="form-horizontal" role="form">
 				
-			  <div class="form-group">
+			  <!--div class="form-group">
 			    <label for="syn_slide" class="col-sm-3 control-label">投影片同步 <span class="glyphicon glyphicon-transfer"></span></label>
 				<div class="col-sm-9">
 				  <div class="btn-group" data-toggle="buttons">
@@ -156,7 +157,7 @@
 					</label>
 				  </div>
 				</div>
-			  </div>
+			  </div-->
 			  
 			  <div class="form-group">
 				<label for="syn_radio" class="col-sm-3 control-label">語音廣播 <span class="glyphicon glyphicon-music"></span></label>
@@ -338,12 +339,6 @@
 		
 		// 橡皮擦開關
 		$("#tool-eraser").click(toggleEraser);
-		
-		// 投票開關
-		$("#tool-vote").click(function() {
-			$(this).toggleClass("active");
-			// TODO
-		});
 
 		// 聽眾震動開關 (提神用)
 		$("#tool-bell").click(function() {
@@ -493,9 +488,9 @@
 					plugins: [
 						"advlist autolink lists link image charmap print preview anchor",
 						"searchreplace visualblocks code fullscreen",
-						"insertdatetime table contextmenu paste"
+						"insertdatetime table contextmenu paste textcolor colorpicker"
 					],
-					toolbar1: "styleselect | bold italic | alignleft aligncenter alignright alignjustify",
+					toolbar1: "styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify",
 					toolbar2: "bullist numlist outdent indent | link image",
 					statusbar: true,
 					fixed_toolbar_container: "#editor",
@@ -538,9 +533,11 @@
 				disableEditor();
 			}			
 			enablePencil(currentSlide.indexh, currentSlide.indexv);
+			Reveal.configure({ touch: false });
 
 		} else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);
+			Reveal.configure({ touch: true });
 		}
 	}
 	
