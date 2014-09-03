@@ -533,9 +533,11 @@
 				disableEditor();
 			}			
 			enablePencil(currentSlide.indexh, currentSlide.indexv);
+			Reveal.configure({ touch: false });
 
 		} else {
 			disablePencil(currentSlide.indexh, currentSlide.indexv);
+			Reveal.configure({ touch: true });
 		}
 	}
 	
