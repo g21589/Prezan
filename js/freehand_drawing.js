@@ -39,8 +39,8 @@ function initCanvas(canvasId) {
 	var h = $('.reveal').height();
 	var scale = getSlideScale();
 	
-	$('section.present').not('.stack').prepend('<div id=' + canvasId + ' class="canvas"></div>');
-	$canvas = $('#' + canvasId);
+	$canvas = $('<div id=' + canvasId + ' class="canvas"></div>');
+	$canvas.prependTo( Reveal.getCurrentSlide() );
 
 	$canvas.width(w * scale).height(h * scale).css('position', 'fixed');
 	
