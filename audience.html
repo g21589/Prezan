@@ -304,21 +304,18 @@
 				}
 			});
 			
-			// Initialize canvas
-			var canvasId;			
+			// Initialize canvas	
 			socket.on('init_canvas', function(canvas) {
-				var $canvas;
-				canvasId = canvas.match(/id="(.+?)"/)[1];
-				if( $('#' + canvasId).length == 0 ) {
-					$('section.present').not('.stack').prepend(canvas);
-					$canvas = $('#' + canvasId);
+				var $canvas = $(canvas);
+				if( $(Reveal.getCurrentSlide()).children('.canvas').length == 0 ) {
+					$canvas.prependTo( Reveal.getCurrentSlide() );
 					$canvas.css('z-index', '-1');
-				}				
+				}
 			});
 			
 			//Add path
 			socket.on('add_path', function(fhpath) {
-				var $canvas = $('#' + canvasId);
+				var $canvas = $(Reveal.getCurrentSlide()).children('.canvas');
 				$canvas.children('svg').append(fhpath);
 				$canvas.html($canvas.html());
 			});
