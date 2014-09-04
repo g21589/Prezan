@@ -152,6 +152,7 @@
 	<script>
 	
 	var delayInMS = 0;
+	var timeouts = [];
 	var vibrateTimer = null;
 	
 	/**
@@ -198,6 +199,47 @@
 		
 	}
 	
+	/**
+	 * 滑鼠點擊事件
+	 */
+	function mouseClicked() {
+		var x = mousePos.x * $(window).width();
+		var y = mousePos.y * $(window).height();
+		$('#mouse').hide();
+		var element = document.elementFromPoint(x, y);
+		$('#mouse').show();
+		
+		if ($(element).get(0).tagName == 'VIDEO') {
+			var v = $(element).get(0);
+			v.paused ? v.play() : v.pause();
+		} else if ($(element).is("[clickable]")) {
+			$(element).click();
+		}
+
+		// 滑鼠點擊動畫
+		var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
+		$("body").append(clickCircle);
+		setTimeout(function() { clickCircle.remove() }, 700);
+	}
+	
+	/**
+	 * 震動事件
+	 */
+	function vibrated(isOpen) {
+		if (isOpen) {
+			if (window.navigator && window.navigator.vibrate) {
+				vibrateTimer = setInterval(function() {
+					var a = Math.round(Math.random() * 500);
+					navigator.vibrate([a, 500-a]);
+				}, 500);	
+			}
+		} else {
+			clearInterval(vibrateTimer);
+			navigator.vibrate(0);
+			vibrateTimer = null;
+		}
+	}
+	
 	$(document).ready(function() {
 	
 		// Initialize sliderbars
@@ -234,103 +276,138 @@
 			
 			// audience_chs事件
 			socket.on('audience_chs', function(e) {
-				setTimeout(function() {
+				if (delayInMS == 0) {
 					Reveal.slide(e.indexh, e.indexv, e.indexf);
-				}, delayInMS);
+				} else {
+					timeouts.push( setTimeout(function() {
+						Reveal.slide(e.indexh, e.indexv, e.indexf);
+					}, delayInMS); );
+				}
 			});
 			
 			// Mousemove事件
 			socket.on('mousemove', function(mousePos) {
-				setTimeout(function() {
+				if (delayInMS == 0) {
 					$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
-				}, delayInMS);
+				} else {
+					timeouts.push( setTimeout(function() {
+						$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
+					}, delayInMS); );
+				}
 			});
 			
 			// Mouseclick事件
 			socket.on('click', function (mousePos) {
-				setTimeout(function() {
-					var x = mousePos.x * $(window).width();
-					var y = mousePos.y * $(window).height();
-					$('#mouse').hide();
-					var element = document.elementFromPoint(x, y);
-					$('#mouse').show();
-					
-					if ($(element).get(0).tagName == 'VIDEO') {
-						var v = $(element).get(0);
-						v.paused ? v.play() : v.pause();
-					} else if ($(element).is("[clickable]")) {
-						$(element).click();
-					}
-
-					
-					// 滑鼠點擊動畫
-					var clickCircle = $("<div class='mouse_animation' style='left:" + (x-25) + "px; top:" + (y-25) + "px'></div>");
-					$("body").append(clickCircle);
-					setTimeout(function() { clickCircle.remove() }, 700);
-				}, delayInMS);
+				if (delayInMS == 0) {
+					mouseClicked();
+				} else {
+					timeouts.push( setTimeout(mouseClicked, delayInMS); );
+				}
 			});
 			
 			// 問問題
 			$("#QA_field").on("click", "#ask_submit", function() {
-				setTimeout(function() {
-					var text = $('#QA_content').val();
-					socket.emit('QA_ask', text);
-				}, delayInMS);
+				if (delayInMS == 0) {
+					socket.emit('QA_ask', $('#QA_content').val());
+				} else {
+					timeouts.push( setTimeout(function() {
+						socket.emit('QA_ask', $('#QA_content').val());
+					}, delayInMS); );
+				}
 			});
 			
 			// Ask_msg
 			socket.on('Ask_msg', function(questions) {
-				setTimeout(function() {
+				if (delayInMS == 0) {
 					alertify.success(questions);
-				}, delayInMS);
+				} else {
+					timeouts.push( setTimeout(function() {
+						alertify.success(questions);
+					}, delayInMS); );
+				}
 			});
 			
 			// start_radio
 			socket.on('start_radio', function() {
 				console.log('start_radio');
+				timeouts = [];
 				setupRadio();
+			});
+			
+			// stop_radio
+			socket.on('stop_radio', function() {
+				console.log('stop_radio');
+				delayInMS = 0;
+				for (var i = 0; i < timeouts.length; i++) {
+					clearTimeout(timeouts[i]);
+				}
+				timeouts = [];
 			});
 			
 			// modify_slides事件
 			socket.on('modify_slides', function(html) {
-				$("#slides").html(html);
+				if (delayInMS == 0) {
+					$("#slides").html(html);
+				} else {
+					timeouts.push( setTimeout(function() {
+						$("#slides").html(html);
+					}, delayInMS); );
+				}
 			});
 			
 			// 震動事件
 			socket.on('vibrate', function(isOpen) {
-				if (isOpen) {
-					if (window.navigator && window.navigator.vibrate) {
-						vibrateTimer = setInterval(function() {
-							var a = Math.round(Math.random() * 500);
-							navigator.vibrate([a, 500-a]);
-						}, 500);	
-					}
+				if (delayInMS == 0) {
+					vibrated(isOpen);
 				} else {
-					clearInterval(vibrateTimer);
-					navigator.vibrate(0);
-					vibrateTimer = null;
+					timeouts.push( setTimeout(vibrated, delayInMS, isOpen); );
 				}
+				
 			});
 			
 			// Initialize canvas	
 			socket.on('init_canvas', function(canvas) {
-				var $canvas = $(canvas);
-				if( $(Reveal.getCurrentSlide()).children('.canvas').length == 0 ) {
-					$canvas.prependTo( Reveal.getCurrentSlide() );
-					$canvas.css('z-index', '-1');
+				if (delayInMS == 0) {
+					var $canvas = $(canvas);
+					if( $(Reveal.getCurrentSlide()).children('.canvas').length == 0 ) {
+						$canvas.prependTo( Reveal.getCurrentSlide() );
+						$canvas.css('z-index', '-1');
+					}
+				} else {
+					timeouts.push( setTimeout(function(canvas) {
+						var $canvas = $(canvas);
+						if( $(Reveal.getCurrentSlide()).children('.canvas').length == 0 ) {
+							$canvas.prependTo( Reveal.getCurrentSlide() );
+							$canvas.css('z-index', '-1');
+						}
+					}, delayInMS, canvas); );
 				}
 			});
 			
 			//Add path
 			socket.on('add_path', function(fhpath) {
-				var $canvas = $(Reveal.getCurrentSlide()).children('.canvas');
-				$canvas.children('svg').append(fhpath);
-				$canvas.html($canvas.html());
+				if (delayInMS == 0) {
+					var $canvas = $(Reveal.getCurrentSlide()).children('.canvas');
+					$canvas.children('svg').append(fhpath);
+					$canvas.html($canvas.html());
+				} else {
+					timeouts.push( setTimeout(function(fhpath) {
+						var $canvas = $(Reveal.getCurrentSlide()).children('.canvas');
+						$canvas.children('svg').append(fhpath);
+						$canvas.html($canvas.html());
+					}, delayInMS, fhpath); );
+				}
 			});
 			
 			//Remove path
 			socket.on('remove_path', function(fhpathId) {
-				$('#' + fhpathId).remove();
+				if (delayInMS == 0) {
+					$('#' + fhpathId).remove();
+				} else {
+					timeouts.push( setTimeout(function() {
+						$('#' + fhpathId).remove();
+					}, delayInMS); );
+				}
 			});
 			
 		});
