@@ -202,7 +202,7 @@
 	/**
 	 * 滑鼠點擊事件
 	 */
-	function mouseClicked() {
+	function mouseClicked(mousePos) {
 		var x = mousePos.x * $(window).width();
 		var y = mousePos.y * $(window).height();
 		$('#mouse').hide();
@@ -281,7 +281,7 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						Reveal.slide(e.indexh, e.indexv, e.indexf);
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
@@ -292,16 +292,16 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						$("#mouse").css({top: mousePos.y + '%', left: mousePos.x + '%'});
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
 			// Mouseclick事件
 			socket.on('click', function (mousePos) {
 				if (delayInMS == 0) {
-					mouseClicked();
+					mouseClicked(mousePos);
 				} else {
-					timeouts.push( setTimeout(mouseClicked, delayInMS); );
+					timeouts.push( setTimeout(mouseClicked, delayInMS, mousePos) );
 				}
 			});
 			
@@ -312,7 +312,7 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						socket.emit('QA_ask', $('#QA_content').val());
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
@@ -323,7 +323,7 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						alertify.success(questions);
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
@@ -351,7 +351,7 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						$("#slides").html(html);
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
@@ -360,7 +360,7 @@
 				if (delayInMS == 0) {
 					vibrated(isOpen);
 				} else {
-					timeouts.push( setTimeout(vibrated, delayInMS, isOpen); );
+					timeouts.push( setTimeout(vibrated, delayInMS, isOpen) );
 				}
 				
 			});
@@ -380,7 +380,7 @@
 							$canvas.prependTo( Reveal.getCurrentSlide() );
 							$canvas.css('z-index', '-1');
 						}
-					}, delayInMS, canvas); );
+					}, delayInMS, canvas) );
 				}
 			});
 			
@@ -395,7 +395,7 @@
 						var $canvas = $(Reveal.getCurrentSlide()).children('.canvas');
 						$canvas.children('svg').append(fhpath);
 						$canvas.html($canvas.html());
-					}, delayInMS, fhpath); );
+					}, delayInMS, fhpath) );
 				}
 			});
 			
@@ -406,7 +406,7 @@
 				} else {
 					timeouts.push( setTimeout(function() {
 						$('#' + fhpathId).remove();
-					}, delayInMS); );
+					}, delayInMS) );
 				}
 			});
 			
